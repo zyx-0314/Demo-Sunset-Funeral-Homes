@@ -188,7 +188,9 @@
 
             function goTo(i) {
                 index = clampIndex(i);
-                const offset = index * pageSize * itemWidth();
+                const width = itemWidth();
+                if (width <= 0) return; // Avoid calculating with zero width
+                const offset = index * pageSize * width;
                 track.style.transform = `translateX(-${offset}px)`;
                 updateArrows();
             }
