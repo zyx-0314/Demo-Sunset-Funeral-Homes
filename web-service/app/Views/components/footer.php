@@ -1,7 +1,7 @@
 <?php
 // Component: components/footer.php
 // Data contract:
-// $links: string
+// $links: array
 // $copyright: string
 ?>
 <footer class="bg-white mt-12 border-t" role="contentinfo">
