@@ -10,3 +10,6 @@ use CodeIgniter\Router\RouteCollection;
 $routes->get('/', 'Users::showLandingPage');
 $routes->get('/mood-board', 'Users::showMoodBoard');
 $routes->get('/road-map', 'Users::showRoadMap');
+
+// Auth
+$routes->get('/login', 'Auth::showLoginPage');

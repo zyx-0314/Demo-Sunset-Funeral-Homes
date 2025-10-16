@@ -180,14 +180,7 @@ $dummyService2 = (object) [
 
     </main>
 
-    <?= view('components/footer', [
-        'copyright' => 'Sunset Funeral Homes — CI4 Sample Project 1',
-        'links' => [
-            ['label' => 'Services', 'href' => '/services'],
-            ['label' => 'Mood board', 'href' => '/mood-board'],
-            ['label' => 'Road map', 'href' => '/road-map']
-        ]
-    ]) ?>
+    <?= view('components/footer') ?>
 </body>
 
 </html>
