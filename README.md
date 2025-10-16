@@ -121,6 +121,7 @@ Run the development stack and the app (rebuild if needed):
 ```cmd
 docker compose up --watch
 ```
+Can see the preview using the following link: [Sunset Funeral Homes](http://sunset-funeral-homes.localtest.me/)
 
 Common utility commands (run inside the project root):
 
@@ -169,11 +170,11 @@ If you prefer, you can include `-f "compose.yaml"` explicitly; the shorter comma
 
 Defaults used in this project (host mapping):
 
-| Service     | Host port |
+| Service     | Host port  |
 |-------------|-----------:|
-| nginx (app) | 8090      |
-| phpMyAdmin  | 8091      |
-| MySQL       | 3390      |
+| nginx (app) | 80         |
+| phpMyAdmin  | 8095       |
+| MySQL       | 3395       |
 
 Database credentials used in examples and CI:
 
