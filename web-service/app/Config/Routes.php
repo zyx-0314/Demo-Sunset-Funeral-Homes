@@ -9,3 +9,4 @@ use CodeIgniter\Router\RouteCollection;
 // User exposed pages
 $routes->get('/', 'Users::showLandingPage');
 $routes->get('/mood-board', 'Users::showMoodBoard');
+$routes->get('/road-map', 'Users::showRoadMap');
