@@ -104,7 +104,7 @@ function renderBadge($status)
 <!doctype html>
 <html lang="en">
 
-<?= view('components/head') ?>
+<?= view('components/head', ["title" => "Road Map"]) ?>
 
 <body class="bg-gray-50 font-sans text-slate-900">
     <?= view('components/header', ['active' => 'Road map']) ?>

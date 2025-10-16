@@ -129,13 +129,7 @@ $process = ["You Arrange", "We Collect", "We Register", "We Return"];
 
     <script src="/js/carousel.js"></script>
 
-    <?= view('components/footer', [
-        'copyright' => 'Sunset Funeral Homes — CI4 Sample Project 1',
-        'links' => [
-            ['label' => 'Mood board', 'href' => '/mood-board'],
-            ['label' => 'Road map', 'href' => '/road-map']
-        ]
-    ]) ?>
+    <?= view('components/footer') ?>
 </body>
 
 </html>
