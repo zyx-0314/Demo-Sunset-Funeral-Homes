@@ -7,4 +7,5 @@ use CodeIgniter\Router\RouteCollection;
  */
 
 // User exposed pages
-$routes->get('/', 'Users::index');
+$routes->get('/', 'Users::showLandingPage');
+$routes->get('/mood-board', 'Users::showMoodBoard');
