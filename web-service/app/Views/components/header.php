@@ -68,7 +68,7 @@ $cta = ['label' => 'Request Assistance', 'href' => '/services'];
             ?>
               <a href="<?= esc($dash) ?>" class="block hover:bg-gray-100 px-4 py-2 text-gray-700 text-sm">Dashboard</a>
             <?php endif; ?>
-            <form method="get" action="/logout">
+            <form method="post" action="/logout">
               <button type="submit" class="hover:bg-gray-100 px-4 py-2 w-full text-gray-700 text-sm text-left">Logout</button>
             </form>
           </div>
