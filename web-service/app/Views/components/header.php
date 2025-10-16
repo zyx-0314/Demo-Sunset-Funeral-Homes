@@ -138,7 +138,7 @@ $cta = ['label' => 'Request Assistance', 'href' => '/services'];
           if ($show): ?>
             <a
               href="<?= esc($item['href'] ?? '#') ?>"
-              class="<?= !empty($active ?? false && $active == $item['label']) ? 'text-sage-dark font-bold' : 'text-gray-700' ?> block px-3 py-2 text-base font-medium hover:bg-gray-50 rounded-md"
+              class="<?= (!empty($active) && $active == $item['label']) ? 'text-sage-dark font-bold' : 'text-gray-700' ?> block px-3 py-2 text-base font-medium hover:bg-gray-50 rounded-md"
               role="menuitem">
               <?= esc($item['label'] ?? '') ?>
             </a>
