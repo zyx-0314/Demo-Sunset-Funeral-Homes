@@ -6,8 +6,13 @@ use App\Controllers\BaseController;
 
 class Users extends BaseController
 {
-    public function index(): string
+    public function showLandingPage(): string
     {
         return view('user/landing');
+    }
+
+    public function showMoodBoard(): string
+    {
+        return view('user/mood_board');
     }
 }

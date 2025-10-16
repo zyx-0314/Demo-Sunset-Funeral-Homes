@@ -1,6 +1,12 @@
 <?php
 // Page: user/landing
 // $services: object array | string | null
+
+// Variable declarations
+$items = $services ?? [];
+$items = array_values($items);
+$carousel = array_slice($items, 0, 4);
+$process = ["You Arrange", "We Collect", "We Register", "We Return"];
 ?>
 <!doctype html>
 <html lang="en">
@@ -44,9 +50,9 @@
         <!-- Features (fragmented into reusable cards) -->
         <section class="mt-12">
             <div class="gap-6 grid grid-cols-1 md:grid-cols-3">
-                <?= view('components/cards/card', ['title' => 'Simple process', 'excerpt' => 'We guide you step-by-step so arrangements are clear and manageable.', 'image' => 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=200&q=80']) ?>
-                <?= view('components/cards/card', ['title' => 'Transparent pricing', 'excerpt' => 'Upfront options and pricing to remove uncertainty for families.', 'image' => 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=200&q=80']) ?>
-                <?= view('components/cards/card', ['title' => 'Compassionate care', 'excerpt' => 'Our team supports families with empathy and professionalism.', 'image' => 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=200&q=80']) ?>
+                <?= view('components/cards/general_card', ['title' => 'Simple process', 'excerpt' => 'We guide you step-by-step so arrangements are clear and manageable.', 'image' => 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=200&q=80']) ?>
+                <?= view('components/cards/general_card', ['title' => 'Transparent pricing', 'excerpt' => 'Upfront options and pricing to remove uncertainty for families.', 'image' => 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=200&q=80']) ?>
+                <?= view('components/cards/general_card', ['title' => 'Compassionate care', 'excerpt' => 'Our team supports families with empathy and professionalism.', 'image' => 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=200&q=80']) ?>
             </div>
         </section>
 
@@ -78,9 +84,6 @@
                                 <div id="carouselViewport" class="rounded-lg carousel-viewport">
                                     <div id="serviceCarousel" class="carousel-track">
                                         <?php
-                                        $items = $services ?? [];
-                                        $items = array_values($items);
-                                        $carousel = array_slice($items, 0, 4);
                                         foreach ($carousel as $service) :
                                         ?>
                                             <div class="w-full md:w-1/2 carousel-item" style="height:100%;">
@@ -104,7 +107,6 @@
             <h3 class="font-semibold text-lg">We guide you through the process</h3>
             <div class="gap-6 grid grid-cols-1 md:grid-cols-4 mt-6">
                 <?php
-                $process  = ["You Arrange", "We Collect", "We Register", "We Return"];
                 foreach ($process as $value) : ?>
                     <div class="bg-white p-4 rounded-lg text-center">
                         <div class="font-medium text-sm"><?php echo $value ?></div>
