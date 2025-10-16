@@ -11,6 +11,12 @@
 * Add a short description: *what is needed, why it matters*.
 * Assign labels if applicable (`frontend`, `backend`, `databases`, `documents`).
 
+Add to GitHub Project (Projects v2):
+- Set Status = Todo
+- Set Priority = P1/P2/P3
+- Set Area = frontend/backend/databases/documents
+- Set Size = S/M/L and Target Release if known
+
 ---
 
 ### Step 2: Create a Branch
@@ -20,6 +26,9 @@
 
   * `backend/jwt-auth-service`
   * `frontend/login-form-validation`
+
+Project update:
+- Move the Issue Status to In Progress when you start coding (Draft PR recommended).
 
 ---
 
@@ -90,6 +99,9 @@ Refer to `docs/commit-manual.md` for commit examples and to `docs/branching.md` 
   * Add what changed + why
   * Add tests or docs updated
 
+Project update:
+- When PR is opened and linked, set Status = In Review (automation recommended).
+
 ---
 
 ### Step 9: Review & Approve
@@ -102,6 +114,9 @@ Refer to `docs/commit-manual.md` for commit examples and to `docs/branching.md` 
   * ✅ Docs updated if needed
 * If approved → **Merge Pull Request** (Squash or Rebase).
 * Delete branch after merge (optional but recommended).
+
+Project update:
+- After merge (and Issue close), set Status = Done (automation recommended).
 
 Perfect — I see your **`sop-manual.md`** is already built around the **GitHub Workflow** (steps 1–9). To keep uniformity, you’ll just **append new SOP sections** in the same style (with `##` headers and `### Step X` sub-steps).
 
@@ -258,6 +273,17 @@ Small JS should toggle `aria-expanded` and the `hidden` attribute, and handle Es
 - Add one example component per type (header, card, table) and include usage examples in `readme.md` or `docs/components.md`.
 
 ---
+
+## GitHub Project SOP (Summary)
+
+We use GitHub Projects (v2) to track Issues and PRs across a standard Status flow.
+
+- Standard fields: Status (Todo, In Progress, Blocked, In Review, Done), Priority (P1/P2/P3), Area (frontend/backend/databases/documents), Size (S/M/L), Target Release, Owner, Due date.
+- Board columns: Todo → In Progress → Blocked → In Review → Done.
+- Workflow: Add Issue to Project at creation, set fields, move Status as work progresses, and link PRs to Issues for auto-tracking.
+- Automation: Auto-add Issues/PRs, set Status on PR open/merge, nudge inactive In Progress items.
+
+See `docs/github-project-manual.md` for full setup, views, and automation details.
 
 - Last update: 2025-10-17
 - Who: Maintainers
