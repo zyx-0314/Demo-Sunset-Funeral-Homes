@@ -34,7 +34,7 @@ jobs:
       run: docker compose exec php composer migrate
 
     - name: Run database seeds
-      run: docker compose exec php composer seed
+      run: docker compose exec php composer seed:all
 
     - name: Run test suite
       run: docker compose exec php composer test
