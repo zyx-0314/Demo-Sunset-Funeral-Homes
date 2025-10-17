@@ -356,4 +356,67 @@ class Admin extends BaseController
                 ->setJSON(['success' => false, 'message' => 'Server error while updating account: ' . $e->getMessage()]);
         }
     }
+
+    /**
+     * Delete User Account (Soft Delete)
+     *
+     * POST /admin/accounts/delete
+     * Soft deletes an existing user account by setting account_status to inactive and adding deleted_at timestamp.
+     * Requires manager authentication and valid account ID.
+     * Used for account deactivation while preserving data integrity.
+     */
+    public function deleteAccount()
+    {
+        // Get CodeIgniter services for request handling and session management
+        $request = service('request');
+        $session = session();
+
+        // Initialize UsersModel for database operations
+        $userModel = new UsersModel();
+
+        // Set up validation rules for required account ID
+        $validation = \Config\Services::validation();
+        $validation->setRule('id', 'ID', 'required|min_length[1]');
+
+        // Extract POST data containing account ID to delete
+        $post = $request->getPost();
+
+        // Validate input data and handle validation failures
+        if (! $validation->run($post)) {
+            // Store validation errors in session for form display
+            $session->setFlashdata('errors', $validation->getErrors());
+            $session->setFlashdata('old', $post);
+            return redirect()->back()->withInput();
+        }
+
+        try {
+            // Verify account exists before attempting deletion
+            $user = $userModel->find($post['id']);
+            if (! $user) {
+                // Return 404 error if account not found
+                return $this->response->setStatusCode(ResponseInterface::HTTP_NOT_FOUND)
+                    ->setJSON(['success' => false, 'message' => 'Account not found']);
+            }
+
+            // Prepare soft delete by setting account to inactive and adding deletion timestamp
+            $user->account_status = 0; // Mark as inactive/deleted
+            $user->deleted_at = date('Y-m-d H:i:s'); // Set deletion timestamp
+
+            // Execute soft delete operation using model's save method
+            $ok = $userModel->save($user);
+            if ($ok === false) {
+                // Handle database update failure
+                return $this->response->setStatusCode(ResponseInterface::HTTP_INTERNAL_SERVER_ERROR)
+                    ->setJSON(['success' => false, 'message' => 'Failed to delete account']);
+            }
+
+            // Return success response with deleted account ID
+            return $this->response->setStatusCode(ResponseInterface::HTTP_OK)
+                ->setJSON(['success' => true, 'message' => 'Account deleted', 'data' => ['id' => $post['id']]]);
+        } catch (\Exception $e) {
+            // Handle any unexpected errors during deletion process
+            return $this->response->setStatusCode(ResponseInterface::HTTP_INTERNAL_SERVER_ERROR)
+                ->setJSON(['success' => false, 'message' => 'Server error while deleting account']);
+        }
+    }
 }
