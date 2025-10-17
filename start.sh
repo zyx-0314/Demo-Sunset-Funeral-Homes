@@ -11,7 +11,8 @@ then
 fi
 
 # Build and start the services in detached mode
-docker compose up
+docker-compose up
+
 
 # Follow logs of the main app service (optional)
 echo "📜 Attaching to app logs..."
