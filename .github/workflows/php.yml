@@ -31,13 +31,13 @@ jobs:
       run: cp web-service/.env.sample web-service/.env
 
     - name: Run database migrations
-      run: docker compose exec -T php php spark migrate
+      run: docker compose exec php composer migrate
 
     - name: Run database seeds
-      run: docker compose exec -T php php spark db:seed
+      run: docker compose exec php composer seed
 
     - name: Run test suite
-      run: docker compose exec -T php composer test
+      run: docker compose exec php composer test
 
     - name: Stop Docker Compose services
       if: always()
