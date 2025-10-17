@@ -26,3 +26,4 @@ $routes->get('/admin/accounts', 'Admin::showAccountsPage');
 
 // Admin:Manager:Accounts action
 $routes->post('/admin/accounts/create', 'Admin::createAccounts');
+$routes->post('/admin/accounts/update', 'Admin::updateAccount');
