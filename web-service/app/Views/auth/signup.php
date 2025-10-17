@@ -1,8 +1,9 @@
 <?php
 // Page: auth/signup
-// Data contract:
-// $errors: array
-// $old: array
+// Purpose: Displays the user registration form for creating new client accounts, including validation error handling and form repopulation
+// Data Contract:
+// - $errors: array | null - Validation errors keyed by field name (e.g., ['email' => 'Email already registered'])
+// - $old: array | null - Previously submitted form data for repopulation on validation failure
 ?>
 <!doctype html>
 <html lang="en">
