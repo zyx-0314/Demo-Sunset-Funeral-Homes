@@ -10,7 +10,7 @@
 <?= view('components/head', ['title' => 'Login']) ?>
 
 <body class="bg-gray-50 min-h-screen font-sans text-slate-900">
-    <?= view('components/header', ['active' => 'Login']) ?>
+    <?= view('components/headers/navigation_header', ['active' => 'Login']) ?>
 
     <main class="flex justify-center items-center bg-gray-50 px-4 sm:px-6 lg:px-8 py-12">
         <div class="space-y-8 w-full max-w-md">
