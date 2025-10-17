@@ -1,5 +1,8 @@
 <?php
-// Page: user/mood_board
+// Page: user/mood_board.php
+// Purpose: Mood board page displaying design system elements including colors, typography, buttons, and card samples
+// Data Contract:
+// - None (uses hardcoded dummy data for demonstration)
 
 // Dummy data for service cards
 $dummyService1 = (object) [

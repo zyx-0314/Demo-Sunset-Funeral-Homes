@@ -1,8 +1,9 @@
 <?php
-// Page: auth/login
-// Data contract:
-// $errors: array
-// $old: array
+// Page: auth/login.php
+// Purpose: Login page for user authentication with form validation and error handling
+// Data Contract:
+// - $errors: array - Validation errors keyed by field name
+// - $old: array - Previously submitted form data for repopulation
 ?>
 <!doctype html>
 <html lang="en">
