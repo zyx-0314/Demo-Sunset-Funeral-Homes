@@ -144,23 +144,7 @@ function renderBadge($status)
                                 <div class="mt-3 text-gray-700 text-xs">
                                     <strong>Priority:</strong> <?php echo esc($it['priority']); ?>
                                 </div>
-
-                                <details class="mt-3 text-sm">
-                                    <summary class="text-gray-600 text-sm cursor-pointer">Implementation pipeline</summary>
-                                    <ol class="mt-2 ml-5 text-gray-700 list-decimal">
-                                        <li>Database migration (tables, columns, indexes)</li>
-                                        <li>Seeder(s) for dev/test data</li>
-                                        <li>Update Documentation for Database Commands</li>
-                                        <li>Controller endpoints (API + web) and routes</li>
-                                        <li>Views (frontend) and small UI components</li>
-                                        <li>Update Documentation for Mobile, Tablet and PC Screen Testing</li>
-                                        <li>Model / Entity and Repository</li>
-                                        <li>Service layer (business rules) + validation</li>
-                                        <li>Update Documentation for Functionality Testing</li>
-                                    </ol>
-                                </details>
                             </div>
-
                             <div class="ml-4 text-right">
                                 <?php echo renderBadge($it['status']); ?>
                             </div>
