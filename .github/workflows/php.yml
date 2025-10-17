@@ -17,23 +17,28 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Validate composer.json and composer.lock
-      run: composer validate --strict
+    - name: Build Docker Compose services
+      run: docker compose build
 
-    - name: Cache Composer packages
-      id: composer-cache
-      uses: actions/cache@v3
-      with:
-        path: vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-php-
+    - name: Start Docker Compose services
+      run: docker compose up -d
 
-    - name: Install dependencies
-      run: composer install --prefer-dist --no-progress
+    - name: Wait for MySQL to be ready
+      run: |
+        timeout 60 bash -c 'until docker compose exec -T mysql mysqladmin ping -h 127.0.0.1 -proot; do sleep 2; done'
 
-    # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
-    # Docs: https://getcomposer.org/doc/articles/scripts.md
+    - name: Copy environment file
+      run: cp web-service/.env.sample web-service/.env
 
-    # - name: Run test suite
-    #   run: composer run-script test
+    - name: Run database migrations
+      run: docker compose exec -T php php spark migrate
+
+    - name: Run database seeds
+      run: docker compose exec -T php php spark db:seed
+
+    - name: Run test suite
+      run: docker compose exec -T php composer test
+
+    - name: Stop Docker Compose services
+      if: always()
+      run: docker compose down
