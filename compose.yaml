@@ -12,6 +12,7 @@ services:
       - /var/www/html/vendor
     environment:
       CI_ENVIRONMENT: development
+      XDEBUG_MODE: coverage
     depends_on:
       mysql:
         condition: service_healthy
