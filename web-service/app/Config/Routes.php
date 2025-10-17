@@ -23,3 +23,8 @@ $routes->post('/signup', 'Auth::signup');
 // Admin:Manager pages
 $routes->get('/admin/dashboard', 'Admin::showDashboardPage');
 $routes->get('/admin/accounts', 'Admin::showAccountsPage');
+
+// Admin:Manager:Accounts action
+$routes->post('/admin/accounts/create', 'Admin::createAccounts');
+$routes->post('/admin/accounts/update', 'Admin::updateAccount');
+$routes->post('/admin/accounts/delete', 'Admin::deleteAccount');
