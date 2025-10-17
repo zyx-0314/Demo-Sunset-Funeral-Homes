@@ -12,11 +12,10 @@
 <body class="bg-gray-50 min-h-screen font-sans text-slate-900">
     <?= view('components/header', ['active' => 'Login']) ?>
 
-
     <main class="flex justify-center items-center bg-gray-50 px-4 sm:px-6 lg:px-8 py-12">
         <div class="space-y-8 w-full max-w-md">
             <div>
-                <img class="mx-auto w-auto h-12" src="<?= esc('logo/main.svg') ?>" alt="<?= esc($brandTitle ?? 'Sunset Funeral Homes') ?>">
+                <img class="mx-auto w-auto h-12" src="<?= esc('/logo/main.svg') ?>" alt="<?= esc($brandTitle ?? 'Sunset Funeral Homes') ?>">
                 <h2 class="mt-6 font-extrabold text-gray-900 text-3xl text-center">Sign in to your account</h2>
                 <p class="mt-2 text-gray-600 text-sm text-center">Don't have an account? <a href="/signup" class="font-medium text-emerald-600 hover:underline">Sign up</a></p>
             </div>
@@ -63,6 +62,8 @@
                     </button>
                 </div>
             </form>
+
+            <?= view('components/sections/dev_login_buttons') ?>
         </div>
     </main>
 
