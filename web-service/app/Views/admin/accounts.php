@@ -1,10 +1,11 @@
 <?php
-// Page: admin/accounts
-// Data contract:
-// - $accounts: string | object array
-// - $accountsCount: string | number
-// - $verifiedEmailAccountsCount: string | number
-// - $nonVerfiedEmailAccountsCount: string | number
+// Page: admin/accounts.php
+// Purpose: Admin accounts management page with user statistics and account listing interface
+// Data Contract:
+// - $accounts: string | object array - User account data or error message if loading fails
+// - $accountsCount: string | number - Total count of active user accounts
+// - $verifiedEmailAccountsCount: string | number - Count of accounts with verified email addresses
+// - $nonVerfiedEmailAccountsCount: string | number - Count of accounts with unverified email addresses
 ?>
 <!doctype html>
 <html lang="en">
