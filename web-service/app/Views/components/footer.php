@@ -1,8 +1,14 @@
 <?php
 // Component: components/footer.php
-// Data contract:
-// $links: array
-// $copyright: string
+// Purpose: Site footer with logo, navigation links, and contact information
+// Data Contract:
+// - None (hardcoded content)
+$copyright = 'Sunset Funeral Homes — CI4 Sample Project 1';
+
+$links = [
+  ['label' => 'Mood board', 'href' => '/mood-board'],
+  ['label' => 'Road map', 'href' => '/road-map']
+]
 ?>
 <footer class="bg-white mt-12 border-t" role="contentinfo">
   <div class="mx-auto px-6 py-8 max-w-6xl text-gray-600 text-sm">

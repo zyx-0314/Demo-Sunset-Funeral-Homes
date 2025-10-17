@@ -13,6 +13,9 @@ RUN docker-php-ext-configure intl \
     && docker-php-ext-configure gd --with-jpeg \
     && docker-php-ext-install -j"$(nproc)" intl mbstring pdo pdo_mysql mysqli gd zip
 
+# Install Xdebug for code coverage
+RUN pecl install xdebug && docker-php-ext-enable xdebug
+
 # Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
@@ -33,4 +36,5 @@ RUN { \
     echo "memory_limit=512M"; \
     echo "upload_max_filesize=32M"; \
     echo "post_max_size=32M"; \
+    echo "xdebug.mode=coverage"; \
     } > /usr/local/etc/php/conf.d/dev.ini

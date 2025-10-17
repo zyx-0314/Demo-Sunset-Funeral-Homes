@@ -1,10 +1,11 @@
 <?php
-// Component: components/cards/card_stats.php
-// Data contract:
-// $title: string
-// $value: string|int
-// $subtitle: string|null
-// $class: string|null
+// Component: components/cards/card_stat.php
+// Purpose: Statistics card component for displaying metrics with title and value
+// Data Contract:
+// - $title: string|null - Metric title
+// - $value: string|int|null - Metric value
+// - $subtitle: string|null - Optional subtitle
+// - $class: string|null - Additional CSS classes
 ?>
 
 <div class="bg-white rounded-lg shadow p-4 <?php echo isset($class) ? esc($class) : ''; ?>">
