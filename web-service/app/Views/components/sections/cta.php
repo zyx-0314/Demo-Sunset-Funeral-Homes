@@ -1,10 +1,11 @@
 <?php
-// Component: components/cta.php
+// Component: components/sections/cta.php
+// Purpose: Call-to-action section with heading, subtext, and up to two buttons (primary and secondary)
 // Data contract:
-// $heading: string
-// $sub: string|null
-// $primary: object
-// $secondary: object
+// - $heading: string - Main heading text (optional)
+// - $sub: string|null - Optional subtext below heading
+// - $primary: array - Primary button config with 'label' and 'href' keys
+// - $secondary: array - Secondary button config with 'label' and 'href' keys
 ?>
 <section class="bg-sage my-8 py-12 rounded-lg text-white">
   <div class="mx-auto px-4 text-center container">

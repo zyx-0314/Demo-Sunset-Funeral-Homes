@@ -1,8 +1,11 @@
 <?php
 // Component: components/header.php
-// $brandTitle: string
-// $brandTagline: string|null
-// $logo: object
+// Purpose: Site header with logo, navigation menu, and CTA button
+// Data Contract:
+// - $brandTitle: string|null - Brand title text
+// - $brandTagline: string|null - Brand tagline text
+// - $logo: string|null - Logo image path
+// - $active: string|null - Active navigation item label
 ?>
 <?php
 $nav = [

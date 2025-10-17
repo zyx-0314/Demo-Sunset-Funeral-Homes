@@ -1,5 +1,8 @@
 <?php
 // Component: components/footer.php
+// Purpose: Site footer with logo, navigation links, and contact information
+// Data Contract:
+// - None (hardcoded content)
 $copyright = 'Sunset Funeral Homes — CI4 Sample Project 1';
 
 $links = [

@@ -1,8 +1,9 @@
 <?php
 // Component: components/head.php
-// Data contract:
-// $title: string
-// $css: array of CSS file paths
+// Purpose: HTML head section with meta tags, fonts, and CSS includes
+// Data Contract:
+// - $title: string|null - Page title (optional)
+// - $css: array - Array of CSS file paths to include
 ?>
 
 <head>
