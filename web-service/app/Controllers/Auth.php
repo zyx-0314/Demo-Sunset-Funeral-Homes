@@ -152,7 +152,7 @@ class Auth extends BaseController
 
         // Redirect users to different pages based on their role
         // This is called "role-based access control" (RBAC)
-        $type = strtolower($userArr['type'] ?? 'client');
+        $type = strtolower($user->type ?? 'client');
 
         if ($type === 'manager') {
             // Managers go to admin dashboard
