@@ -34,13 +34,13 @@ $dummyService2 = (object) [
 <?= view('components/head', ['title' => "Mood Board"]) ?>
 
 <body class="bg-gray-50 text-gray-900">
-    <?= view('components/header') ?>
+    <?= view('components/headers/navigation_header') ?>
 
     <main class="mx-auto px-6 py-12 max-w-5xl">
-        <header class="mb-8">
-            <h1 class="font-bold text-2xl">Mood board</h1>
-            <p class="text-gray-600">Visual identity samples for Sunset Funeral Homes (funeral services)</p>
-        </header>
+        <?= view('components/headers/page_header', [
+            'title' => 'Mood board',
+            'description' => 'Visual identity samples for Sunset Funeral Homes (funeral services)'
+        ]) ?>
 
         <!-- Color Palette -->
         <section class="mb-8">

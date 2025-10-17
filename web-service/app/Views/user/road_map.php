@@ -110,13 +110,13 @@ function renderBadge($status)
 <?= view('components/head', ["title" => "Road Map"]) ?>
 
 <body class="bg-gray-50 font-sans text-slate-900">
-    <?= view('components/header', ['active' => 'Road map']) ?>
+    <?= view('components/headers/navigation_header', ['active' => 'Road map']) ?>
 
     <div class="mx-auto px-6 py-12 max-w-5xl">
-        <header class="mb-6">
-            <h1 class="font-bold text-2xl">Road map</h1>
-            <p class="text-gray-600">High-level plan and status for upcoming features.</p>
-        </header>
+        <?= view('components/headers/page_header', [
+            'title' => 'Road map',
+            'description' => 'High-level plan and status for upcoming features.'
+        ]) ?>
 
         <div class="flex justify-between items-center mb-4">
             <div class="flex items-center space-x-3">
@@ -210,14 +210,7 @@ function renderBadge($status)
         </section>
 
     </div>
-    <?= view('components/footer', [
-        'copyright' => 'Sunset Funeral Homes — CI4 Sample Project 1',
-        'links' => [
-            ['label' => 'Services', 'href' => '/services'],
-            ['label' => 'Mood board', 'href' => '/mood-board'],
-            ['label' => 'Road map', 'href' => '/road-map']
-        ]
-    ]) ?>
+    <?= view('components/footer') ?>
 
     <script src="/js/roadmap.js"></script>
 </body>

@@ -30,9 +30,9 @@ $features = [
 <?= view('components/head', ['css' => ['/css/landing.css']]) ?>
 
 <body class="bg-gray-50 font-sans text-slate-900">
-    <?= view('components/header', ['active' => 'Home']) ?>
+    <?= view('components/headers/navigation_header', ['active' => 'Home']) ?>
 
-    <main class="mx-auto px-6 py-12 max-w-6xl">
+    <main class="mx-auto px-6 py-12 max-w-5xl">
         <!-- Hero -->
         <?= view('components/sections/hero') ?>
 
@@ -46,7 +46,7 @@ $features = [
         </section>
 
         <!-- Marketing + Services carousel -->
-        <?= view('components/sections/services_carousel', ['services' => $services]) ?>
+        <?= view('components/sections/services_carousel', ['services' => $services ?? []]) ?>
 
         <!-- Steps -->
         <?= view('components/sections/steps', ['steps' => $process]) ?>
