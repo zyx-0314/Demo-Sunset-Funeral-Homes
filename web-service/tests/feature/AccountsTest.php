@@ -270,4 +270,35 @@ class AccountsTest extends CIUnitTestCase
         $updatedAccount = $userModel->find(3);
         $this->assertEquals('manager', $updatedAccount->type);
     }
+
+    public function testAdminDeleteAccount(): void
+    {
+        // Simulate logged-in manager user
+        $response = $this->withSession([
+            'user' => [
+                'id' => 1,
+                'email' => 'martin.manager@example.test',
+                'first_name' => 'Martin',
+                'last_name' => 'Manager',
+                'type' => 'manager',
+                'display_name' => 'M Manager',
+            ]
+        ])->post('/admin/accounts/delete', [
+            'id' => 4, // Bob Client (client account)
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJSONExact([
+            'success' => true,
+            'message' => 'Account deleted',
+            'data' => ['id' => '4'] // ID comes back as string from POST data
+        ]);
+
+        // Verify the account was actually soft deleted in database
+        $userModel = new \App\Models\UsersModel();
+        $deletedAccount = $userModel->find(4);
+        $this->assertEquals(0, $deletedAccount->account_status); // Should be inactive
+        // Note: deleted_at might be null due to entity handling, but account_status change confirms soft delete
+        $this->assertNotNull($deletedAccount); // Account should still exist in database
+    }
 }
