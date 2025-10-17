@@ -103,4 +103,44 @@ class Admin extends BaseController
             'servicesCount' => "Under construction"  // TODO: fetch from services model
         ]);
     }
+
+    /**
+     * Display Admin Accounts Management Page
+     *
+     * GET /admin/accounts
+     * Shows the accounts management interface with user statistics and account listings.
+     * Requires manager authentication.
+     */
+    public function showAccountsPage()
+    {
+        // Enforce manager-only access using role-based authorization
+        $accessCheck = $this->checkManagerAccess();
+        if ($accessCheck !== null) {
+            return $accessCheck; // Return 403 error view if access denied
+        }
+
+        try {
+            // Use UsersModel to load active accounts
+            $userModel = new UsersModel();
+
+            // Query Builder: active users ordered by id asc
+            $accounts = $userModel->where('account_status', 1)->orderBy('id', 'ASC')->findAll();
+
+            // Number of all active accounts
+            $accountsCount = $userModel->where('account_status', 1)->countAllResults();
+
+            // Filter Number of active accounts
+            $verifiedEmailAccountsCount = $userModel->where('account_status', 1)->where('email_activated', 1)->countAllResults();
+            $nonVerfiedEmailAccountsCount = $accountsCount - $verifiedEmailAccountsCount;
+        } catch (\Exception $e) {
+            $accounts = "Server Issue: " . $e;
+        }
+
+        return view('admin/accounts', [
+            'accounts' => $accounts,
+            'accountsCount' => $accountsCount ?? 0,
+            'verifiedEmailAccountsCount' => $verifiedEmailAccountsCount ?? 0,
+            'nonVerfiedEmailAccountsCount' => $nonVerfiedEmailAccountsCount ?? 0,
+        ]);
+    }
 }
