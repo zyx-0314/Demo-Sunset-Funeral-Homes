@@ -22,3 +22,4 @@ $routes->post('/signup', 'Auth::signup');
 
 // Admin:Manager pages
 $routes->get('/admin/dashboard', 'Admin::showDashboardPage');
+$routes->get('/admin/accounts', 'Admin::showAccountsPage');
