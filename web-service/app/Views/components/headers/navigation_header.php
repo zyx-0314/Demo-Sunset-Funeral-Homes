@@ -1,5 +1,5 @@
 <?php
-// Component: components/navigation/header.php
+// Component: components/headers/navigation_header.php
 // Purpose: Site header with logo, navigation menu, and CTA button
 // Data Contract:
 // - $brandTitle: string|null - Brand title text
@@ -21,7 +21,7 @@ $cta = ['label' => 'Request Assistance', 'href' => '/services'];
     <div class="flex justify-between items-center mx-auto py-5 max-w-6xl">
         <div class="flex items-center space-x-4">
             <a href="/" class="flex items-center space-x-3" aria-label="<?= esc($brandTitle ?? 'Sunset Funeral Homes') ?> home">
-                <img src="<?= esc($logo ?? 'logo/main.svg') ?>" alt="<?= esc($brandTitle ?? 'Sunset Funeral Homes') ?>" class="h-11">
+                <img src="<?= esc($logo ?? '/logo/main.svg') ?>" alt="<?= esc($brandTitle ?? 'Sunset Funeral Homes') ?>" class="h-11">
                 <div class="hidden sm:block">
                     <h1 class="font-semibold text-xl"><?= esc($brandTitle ?? 'Sunset Funeral Homes') ?></h1>
                     <p class="text-gray-500 text-sm"><?= esc($brandTagline ?? 'Compassionate care, every step of the way') ?></p>

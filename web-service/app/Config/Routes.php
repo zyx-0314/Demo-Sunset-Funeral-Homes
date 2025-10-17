@@ -19,3 +19,6 @@ $routes->get('/signup', 'Auth::showSignupPage');
 $routes->post('/login', 'Auth::login');
 $routes->post('/logout', 'Auth::logout');
 $routes->post('/signup', 'Auth::signup');
+
+// Admin:Manager pages
+$routes->get('/admin/dashboard', 'Admin::showDashboardPage');
