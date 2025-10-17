@@ -110,12 +110,9 @@ class Auth extends BaseController
             return redirect()->back()->withInput();
         }
 
-        // Convert user object to array if needed (CodeIgniter models can return different formats)
-        $userArr = is_array($user) ? $user : (method_exists($user, 'toArray') ? $user->toArray() : (array) $user);
-
         // Verify the password against the stored hash
         // password_verify() is a PHP function that safely compares passwords
-        if (! password_verify($request->getPost('password'), $userArr['password_hash'] ?? '')) {
+        if (! password_verify($request->getPost('password'), $user->password_hash ?? '')) {
             $session->setFlashdata('errors', ['password' => 'Incorrect password']);
             $session->setFlashdata('old', ['email' => $email]);
             return redirect()->back()->withInput();
@@ -123,14 +120,15 @@ class Auth extends BaseController
 
         // SUCCESS: User is authenticated!
         // Create a session with minimal user data (don't store sensitive info)
+        // Use Entity object properties directly (more object-oriented approach)
         $session->set('user', [
-            'id' => $userArr['id'] ?? null,
-            'email' => $userArr['email'] ?? null,
-            'first_name' => $userArr['first_name'] ?? null,
-            'last_name' => $userArr['last_name'] ?? null,
-            'type' => $userArr['type'] ?? 'client', // User role (client, manager, etc.)
+            'id' => $user->id ?? null,
+            'email' => $user->email ?? null,
+            'first_name' => $user->first_name ?? null,
+            'last_name' => $user->last_name ?? null,
+            'type' => $user->type ?? 'client', // User role (client, manager, etc.)
             // Create a display name from first initial + middle initial + last name
-            'display_name' => trim(($userArr['first_name'][0] ?? '') . ' ' . ($userArr['middle_name'][0] ?? '') . ' ' . ($userArr['last_name'] ?? '')),
+            'display_name' => trim(($user->first_name[0] ?? '') . ' ' . ($user->middle_name[0] ?? '') . ' ' . ($user->last_name ?? '')),
         ]);
 
         // Handle "Remember Me" functionality
@@ -290,13 +288,13 @@ class Auth extends BaseController
 
         // Set up session data for the new user (same as login process)
         $session->set('user', [
-            'id' => $newUser['id'] ?? null,
-            'email' => $newUser['email'] ?? null,
-            'first_name' => $newUser['first_name'] ?? null,
-            'last_name' => $newUser['last_name'] ?? null,
-            'type' => $newUser['type'] ?? 'client',
+            'id' => $newUser->id ?? null,
+            'email' => $newUser->email ?? null,
+            'first_name' => $newUser->first_name ?? null,
+            'last_name' => $newUser->last_name ?? null,
+            'type' => $newUser->type ?? 'client',
             // Create display name: "J D Smith" format
-            'display_name' => trim(($newUser['first_name'][0] ?? '') . ' ' . ($newUser['middle_name'][0] ?? '') . ' ' . ($newUser['last_name'] ?? '')),
+            'display_name' => trim(($newUser->first_name[0] ?? '') . ' ' . ($newUser->middle_name[0] ?? '') . ' ' . ($newUser->last_name ?? '')),
         ]);
 
         // Set success message and redirect to home page
