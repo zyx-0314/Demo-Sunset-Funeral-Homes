@@ -110,13 +110,13 @@ function renderBadge($status)
 <?= view('components/head', ["title" => "Road Map"]) ?>
 
 <body class="bg-gray-50 font-sans text-slate-900">
-    <?= view('components/header', ['active' => 'Road map']) ?>
+    <?= view('components/headers/navigation_header', ['active' => 'Road map']) ?>
 
     <div class="mx-auto px-6 py-12 max-w-5xl">
-        <header class="mb-6">
-            <h1 class="font-bold text-2xl">Road map</h1>
-            <p class="text-gray-600">High-level plan and status for upcoming features.</p>
-        </header>
+        <?= view('components/headers/page_header', [
+            'title' => 'Road map',
+            'description' => 'High-level plan and status for upcoming features.'
+        ]) ?>
 
         <div class="flex justify-between items-center mb-4">
             <div class="flex items-center space-x-3">
@@ -144,23 +144,7 @@ function renderBadge($status)
                                 <div class="mt-3 text-gray-700 text-xs">
                                     <strong>Priority:</strong> <?php echo esc($it['priority']); ?>
                                 </div>
-
-                                <details class="mt-3 text-sm">
-                                    <summary class="text-gray-600 text-sm cursor-pointer">Implementation pipeline</summary>
-                                    <ol class="mt-2 ml-5 text-gray-700 list-decimal">
-                                        <li>Database migration (tables, columns, indexes)</li>
-                                        <li>Seeder(s) for dev/test data</li>
-                                        <li>Update Documentation for Database Commands</li>
-                                        <li>Controller endpoints (API + web) and routes</li>
-                                        <li>Views (frontend) and small UI components</li>
-                                        <li>Update Documentation for Mobile, Tablet and PC Screen Testing</li>
-                                        <li>Model / Entity and Repository</li>
-                                        <li>Service layer (business rules) + validation</li>
-                                        <li>Update Documentation for Functionality Testing</li>
-                                    </ol>
-                                </details>
                             </div>
-
                             <div class="ml-4 text-right">
                                 <?php echo renderBadge($it['status']); ?>
                             </div>
@@ -210,14 +194,7 @@ function renderBadge($status)
         </section>
 
     </div>
-    <?= view('components/footer', [
-        'copyright' => 'Sunset Funeral Homes — CI4 Sample Project 1',
-        'links' => [
-            ['label' => 'Services', 'href' => '/services'],
-            ['label' => 'Mood board', 'href' => '/mood-board'],
-            ['label' => 'Road map', 'href' => '/road-map']
-        ]
-    ]) ?>
+    <?= view('components/footer') ?>
 
     <script src="/js/roadmap.js"></script>
 </body>
