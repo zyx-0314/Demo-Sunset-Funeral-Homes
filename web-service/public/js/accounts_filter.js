@@ -1,6 +1,7 @@
 /**
- * Accounts Filter, Search, and Sort functionality
- * Handles client-side filtering of the accounts table based on search, type, and sort criteria
+ * Accounts Filter and Search functionality
+ * Handles client-side filtering of the accounts table based on search and type criteria
+ * Note: Sorting is now handled server-side
  */
 
 (function () {
@@ -28,9 +29,7 @@
         if (!table) return;
 
         const qInput = document.getElementById('accounts_q');
-        const sortSelect = document.getElementById('accounts_sort');
         const typeSelect = document.getElementById('accounts_type');
-        const resetBtn = document.getElementById('accountsResetBtn');
 
         // Build array snapshot of rows with searchable fields
         const rows = Array.from(table.querySelectorAll('tbody tr'));
@@ -59,7 +58,6 @@
 
         function apply() {
             const q = (qInput.value || '').toLowerCase().trim();
-            const sort = sortSelect.value;
             const typeFilter = (typeSelect && typeSelect.value) ? typeSelect.value : 'all';
 
             let out = snapshot.filter(item => {
@@ -76,21 +74,12 @@
                 return true;
             });
 
-            if (sort === 'name_asc') out.sort((a, b) => a.name.localeCompare(b.name));
-            else if (sort === 'name_desc') out.sort((a, b) => b.name.localeCompare(a.name));
-            else if (sort === 'email_asc') out.sort((a, b) => a.email.localeCompare(b.email));
-            else if (sort === 'email_desc') out.sort((a, b) => b.email.localeCompare(a.email));
-
+            // Sorting is now handled server-side, so no client-side sorting here
             render(out);
         }
 
-        [qInput, sortSelect, typeSelect].forEach(el => el && el.addEventListener('input', apply));
-        resetBtn && resetBtn.addEventListener('click', () => {
-            qInput.value = '';
-            sortSelect.value = '';
-            if (typeSelect) typeSelect.value = 'all';
-            apply();
-        });
+        // Only bind to search and type inputs since sorting is server-side
+        [qInput, typeSelect].forEach(el => el && el.addEventListener('input', apply));
 
         // initial
         apply();

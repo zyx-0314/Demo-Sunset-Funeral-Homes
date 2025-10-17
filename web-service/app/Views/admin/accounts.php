@@ -1,10 +1,11 @@
 <?php
-// Page: admin/accounts
-// Data contract:
-// - $accounts: string | object array
-// - $accountsCount: string | number
-// - $verifiedEmailAccountsCount: string | number
-// - $nonVerfiedEmailAccountsCount: string | number
+// Page: admin/accounts.php
+// Purpose: Admin accounts management page with user statistics and account listing interface
+// Data Contract:
+// - $accounts: string | object array - User account data or error message if loading fails
+// - $accountsCount: string | number - Total count of active user accounts
+// - $verifiedEmailAccountsCount: string | number - Count of accounts with verified email addresses
+// - $nonVerfiedEmailAccountsCount: string | number - Count of accounts with unverified email addresses
 ?>
 <!doctype html>
 <html lang="en">
@@ -20,7 +21,7 @@
             <section class="flex-1">
                 <h2 class="mb-6 font-semibold text-2xl">Accounts</h2>
                 <?php if (is_string($accounts)) : ?>
-                    <?= view('components/cards/card', ['title' => $accounts, 'value' => 0]); ?>
+                    <?= view('components/cards/general_card', ['title' => $accounts, 'value' => 0]); ?>
                 <?php else : ?>
                     <div class="gap-4 grid grid-cols-1 md:grid-cols-3 mb-6" id="accountStats">
                         <?= view('components/cards/card_stat', ['title' => 'Total Accounts', 'value' => $accountsCount]) ?>

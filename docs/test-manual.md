@@ -109,6 +109,50 @@ URL: http://localhost:8090/signup
   - Sort: Type, Name, Email
   - Search: Name and Email
 
+#### Sorting Tests
+
+- **Name Sorting (A-Z)**: Click "Name A → Z" → Verify accounts are sorted alphabetically by full name (first + middle initial + last)
+- **Name Sorting (Z-A)**: Click "Name Z → A" → Verify accounts are sorted reverse alphabetically by full name
+- **Email Sorting (A-Z)**: Click "Email A → Z" → Verify accounts are sorted alphabetically by email address
+- **Email Sorting (Z-A)**: Click "Email Z → A" → Verify accounts are sorted reverse alphabetically by email address
+- **Default Sorting**: Click "Sort — default" → Verify accounts are sorted by ID ascending
+- **Sort Persistence**: Apply sort, change page, then return → Verify sort is maintained
+
+#### Filtering Tests
+
+- **Type Filter - All**: Select "Type — all" → Verify all account types are displayed
+- **Type Filter - Client**: Select "Client" → Verify only client accounts are shown
+- **Type Filter - Manager**: Select "Manager" → Verify only manager accounts are shown
+- **Type Filter - Employee**: Select "Employee (non-client)" → Verify only non-client accounts (driver, embalmer, staff, florist) are shown
+- **Filter Persistence**: Apply filter, change page, then return → Verify filter is maintained
+- **Combined Filter + Sort**: Apply both filter and sort → Verify results are both filtered and sorted correctly
+
+#### Search Tests
+
+- **Search by Name**: Enter partial/full name (e.g., "John") → Verify only accounts with matching names are shown
+- **Search by Email**: Enter partial/full email (e.g., "gmail") → Verify only accounts with matching emails are shown
+- **Search Case Insensitive**: Enter mixed case search → Verify search works regardless of case
+- **Search Multiple Matches**: Enter term that matches multiple accounts → Verify all matching accounts are shown
+- **Search No Results**: Enter term with no matches → Verify "No accounts match your search" message appears
+- **Search Persistence**: Apply search, change page, then return → Verify search is maintained
+- **Combined Search + Filter + Sort**: Apply all three → Verify results are filtered, searched, and sorted correctly
+
+#### Pagination Tests
+
+- **Per Page Selection**: Change "Show X per page" → Verify page resets to 1 and shows correct number of items
+- **Page Navigation**: Click page numbers → Verify correct page loads with maintained filters/search/sort
+- **Previous/Next Links**: Click "Prev"/"Next" → Verify navigation works and disables appropriately at boundaries
+- **Page Reset on Filter**: Apply new filter/search → Verify page resets to 1
+- **Page Bounds**: Navigate beyond available pages → Verify stays within valid page range
+- **Pagination Display**: With many results → Verify pagination shows current page highlighted and reasonable page range
+
+#### Combined Feature Tests
+
+- **Filter + Search + Sort + Pagination**: Apply all features simultaneously → Verify everything works together correctly
+- **URL Parameter Handling**: Manually modify URL parameters (?search=term&sort=name_asc&type=client&page=2&per_page=10) → Verify page loads with correct state
+- **Browser Back/Forward**: Use browser navigation → Verify state is maintained
+- **Form Reset**: Click "Reset" button → Verify all filters/search/sort are cleared and page resets to 1
+
 ### Create Account
 
 - Client: http://localhost:8090/signup
