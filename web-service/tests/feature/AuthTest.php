@@ -107,4 +107,21 @@ class AuthTest extends CIUnitTestCase
         // Check user created
         $this->seeInDatabase('users', ['email' => 'john.doe@example.com']);
     }
+
+    public function testAdminAccountsPageForbiddenForNonManager(): void
+    {
+        // Simulate logged-in client user
+        $response = $this->withSession([
+            'user' => [
+                'id' => 2,
+                'email' => 'alice@example.test',
+                'first_name' => 'Alice',
+                'last_name' => 'Client',
+                'type' => 'client',
+                'display_name' => 'A Client',
+            ]
+        ])->get('/admin/accounts');
+
+        $response->assertStatus(403);
+    }
 }

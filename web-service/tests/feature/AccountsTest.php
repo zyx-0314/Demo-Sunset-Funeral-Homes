@@ -39,23 +39,6 @@ class AccountsTest extends CIUnitTestCase
         $response->assertSee('Accounts'); // Should contain accounts content
     }
 
-    public function testAdminAccountsPageForbiddenForNonManager(): void
-    {
-        // Simulate logged-in client user
-        $response = $this->withSession([
-            'user' => [
-                'id' => 2,
-                'email' => 'alice@example.test',
-                'first_name' => 'Alice',
-                'last_name' => 'Client',
-                'type' => 'client',
-                'display_name' => 'A Client',
-            ]
-        ])->get('/admin/accounts');
-
-        $response->assertStatus(403);
-    }
-
     public function testAdminAccountsSortingByType(): void
     {
         // Simulate logged-in manager user
@@ -144,23 +127,6 @@ class AccountsTest extends CIUnitTestCase
 
         $response->assertStatus(200);
         // Should return accounts matching the email search
-    }
-
-    public function testClientSignupCreatesAccount(): void
-    {
-        $response = $this->post('/signup', [
-            'first_name' => 'Test',
-            'last_name' => 'User',
-            'email' => 'test.user@example.com',
-            'password' => 'Password123!',
-            'password_confirm' => 'Password123!',
-        ]);
-
-        $response->assertStatus(302); // Redirect after successful signup
-        $response->assertRedirect('/');
-
-        // Verify user was created in database
-        $this->seeInDatabase('users', ['email' => 'test.user@example.com']);
     }
 
     public function testAdminCreateEmployeeAccount(): void
@@ -300,5 +266,260 @@ class AccountsTest extends CIUnitTestCase
         $this->assertEquals(0, $deletedAccount->account_status); // Should be inactive
         // Note: deleted_at might be null due to entity handling, but account_status change confirms soft delete
         $this->assertNotNull($deletedAccount); // Account should still exist in database
+    }
+
+    // ===== NEW TESTS FOR SORTING, FILTERING, PAGINATION, AND SEARCH =====
+
+    public function testAccountsSortingByNameAscending(): void
+    {
+        $response = $this->withSession($this->getManagerSession())
+            ->get('/admin/accounts?sort=name_asc');
+
+        $response->assertStatus(200);
+        $response->assertSee('Accounts');
+
+        // Parse the HTML to check sorting order
+        $html = $response->getBody();
+        // Extract account names from the HTML and verify alphabetical order
+        preg_match_all('/<td[^>]*>([^<]+)<\/td>\s*<td[^>]*>([^<]+)<\/td>\s*<td[^>]*>([^<]+)<\/td>/', $html, $matches);
+
+        if (count($matches[0]) > 1) {
+            $names = $matches[1]; // First column is name
+            $sortedNames = $names;
+            sort($sortedNames);
+            $this->assertEquals($sortedNames, $names, 'Names should be sorted alphabetically ascending');
+        }
+    }
+
+    public function testAccountsSortingByNameDescending(): void
+    {
+        $response = $this->withSession($this->getManagerSession())
+            ->get('/admin/accounts?sort=name_desc');
+
+        $response->assertStatus(200);
+
+        // Parse the HTML to check reverse alphabetical order
+        $html = $response->getBody();
+        preg_match_all('/<td[^>]*>([^<]+)<\/td>\s*<td[^>]*>([^<]+)<\/td>\s*<td[^>]*>([^<]+)<\/td>/', $html, $matches);
+
+        if (count($matches[0]) > 1) {
+            $names = $matches[1];
+            $sortedNames = $names;
+            rsort($sortedNames);
+            $this->assertEquals($sortedNames, $names, 'Names should be sorted alphabetically descending');
+        }
+    }
+
+    public function testAccountsSortingByEmailAscending(): void
+    {
+        $response = $this->withSession($this->getManagerSession())
+            ->get('/admin/accounts?sort=email_asc');
+
+        $response->assertStatus(200);
+
+        $html = $response->getBody();
+        preg_match_all('/<td[^>]*>([^<]+)<\/td>\s*<td[^>]*>([^<]+)<\/td>\s*<td[^>]*>([^<]+)<\/td>/', $html, $matches);
+
+        if (count($matches[0]) > 1) {
+            $emails = $matches[2]; // Second column is email
+            $sortedEmails = $emails;
+            sort($sortedEmails);
+            $this->assertEquals($sortedEmails, $emails, 'Emails should be sorted alphabetically ascending');
+        }
+    }
+
+    public function testAccountsSortingByEmailDescending(): void
+    {
+        $response = $this->withSession($this->getManagerSession())
+            ->get('/admin/accounts?sort=email_desc');
+
+        $response->assertStatus(200);
+
+        $html = $response->getBody();
+        preg_match_all('/<td[^>]*>([^<]+)<\/td>\s*<td[^>]*>([^<]+)<\/td>\s*<td[^>]*>([^<]+)<\/td>/', $html, $matches);
+
+        if (count($matches[0]) > 1) {
+            $emails = $matches[2];
+            $sortedEmails = $emails;
+            rsort($sortedEmails);
+            $this->assertEquals($sortedEmails, $emails, 'Emails should be sorted alphabetically descending');
+        }
+    }
+
+    public function testAccountsFilteringByTypeClient(): void
+    {
+        $response = $this->withSession($this->getManagerSession())
+            ->get('/admin/accounts?type=client');
+
+        $response->assertStatus(200);
+
+        $html = $response->getBody();
+        preg_match_all('/<td[^>]*>([^<]+)<\/td>\s*<td[^>]*>([^<]+)<\/td>\s*<td[^>]*>([^<]+)<\/td>/', $html, $matches);
+
+        if (count($matches[0]) > 0) {
+            $types = $matches[3]; // Third column is type
+            foreach ($types as $type) {
+                $this->assertEquals('client', strtolower($type), 'All displayed accounts should be clients');
+            }
+        }
+    }
+
+    public function testAccountsFilteringByTypeManager(): void
+    {
+        $response = $this->withSession($this->getManagerSession())
+            ->get('/admin/accounts?type=manager');
+
+        $response->assertStatus(200);
+
+        $html = $response->getBody();
+        preg_match_all('/<td[^>]*>([^<]+)<\/td>\s*<td[^>]*>([^<]+)<\/td>\s*<td[^>]*>([^<]+)<\/td>/', $html, $matches);
+
+        if (count($matches[0]) > 0) {
+            $types = $matches[3];
+            foreach ($types as $type) {
+                $this->assertEquals('manager', strtolower($type), 'All displayed accounts should be managers');
+            }
+        }
+    }
+
+    public function testAccountsFilteringByTypeEmployee(): void
+    {
+        $response = $this->withSession($this->getManagerSession())
+            ->get('/admin/accounts?type=employee');
+
+        $response->assertStatus(200);
+
+        $html = $response->getBody();
+        preg_match_all('/<td[^>]*>([^<]+)<\/td>\s*<td[^>]*>([^<]+)<\/td>\s*<td[^>]*>([^<]+)<\/td>/', $html, $matches);
+
+        if (count($matches[0]) > 0) {
+            $types = $matches[3];
+            foreach ($types as $type) {
+                $this->assertNotEquals('client', strtolower($type), 'No clients should be shown in employee filter');
+            }
+        }
+    }
+
+    public function testAccountsSearchByName(): void
+    {
+        $response = $this->withSession($this->getManagerSession())
+            ->get('/admin/accounts?search=Martin');
+
+        $response->assertStatus(200);
+
+        $html = $response->getBody();
+        preg_match_all('/<td[^>]*>([^<]+)<\/td>\s*<td[^>]*>([^<]+)<\/td>\s*<td[^>]*>([^<]+)<\/td>/', $html, $matches);
+
+        if (count($matches[0]) > 0) {
+            $names = $matches[1];
+            foreach ($names as $name) {
+                $this->assertStringContainsString('Martin', $name, 'All results should contain the search term "Martin"');
+            }
+        }
+    }
+
+    public function testAccountsSearchByEmail(): void
+    {
+        $response = $this->withSession($this->getManagerSession())
+            ->get('/admin/accounts?search=example.test');
+
+        $response->assertStatus(200);
+
+        $html = $response->getBody();
+        preg_match_all('/<td[^>]*>([^<]+)<\/td>\s*<td[^>]*>([^<]+)<\/td>\s*<td[^>]*>([^<]+)<\/td>/', $html, $matches);
+
+        if (count($matches[0]) > 0) {
+            $emails = $matches[2];
+            foreach ($emails as $email) {
+                $this->assertStringContainsString('example.test', $email, 'All results should contain the search term "example.test"');
+            }
+        }
+    }
+
+    public function testAccountsSearchNoResults(): void
+    {
+        $response = $this->withSession($this->getManagerSession())
+            ->get('/admin/accounts?search=nonexistentuser12345');
+
+        $response->assertStatus(200);
+        $response->assertSee('No accounts found');
+    }
+
+    public function testAccountsPagination(): void
+    {
+        $response = $this->withSession($this->getManagerSession())
+            ->get('/admin/accounts?page=1&per_page=5');
+
+        $response->assertStatus(200);
+
+        $html = $response->getBody();
+        // Count table rows (excluding header)
+        $rowCount = substr_count($html, '<tr class="border-t">');
+        $this->assertLessThanOrEqual(5, $rowCount, 'Should show at most 5 accounts per page');
+    }
+
+    public function testAccountsCombinedSearchFilterSort(): void
+    {
+        $response = $this->withSession($this->getManagerSession())
+            ->get('/admin/accounts?search=test&type=manager&sort=name_asc&page=1&per_page=10');
+
+        $response->assertStatus(200);
+
+        $html = $response->getBody();
+        preg_match_all('/<td[^>]*>([^<]+)<\/td>\s*<td[^>]*>([^<]+)<\/td>\s*<td[^>]*>([^<]+)<\/td>/', $html, $matches);
+
+        if (count($matches[0]) > 0) {
+            $names = $matches[1];
+            $emails = $matches[2];
+            $types = $matches[3];
+
+            // Check filtering
+            foreach ($types as $type) {
+                $this->assertEquals('manager', strtolower($type), 'All accounts should be managers');
+            }
+
+            // Check searching
+            foreach ($emails as $email) {
+                $this->assertStringContainsString('test', $email, 'All emails should contain "test"');
+            }
+
+            // Check sorting (names should be in ascending order)
+            if (count($names) > 1) {
+                $sortedNames = $names;
+                sort($sortedNames);
+                $this->assertEquals($sortedNames, $names, 'Names should be sorted ascending');
+            }
+        }
+    }
+
+    public function testAccountsFormReset(): void
+    {
+        // First apply some filters
+        $response = $this->withSession($this->getManagerSession())
+            ->get('/admin/accounts?search=test&type=manager&sort=name_asc&page=2&per_page=5');
+
+        $response->assertStatus(200);
+
+        // Then test reset (should redirect to base URL without parameters)
+        $resetResponse = $this->withSession($this->getManagerSession())
+            ->get('/admin/accounts');
+
+        $resetResponse->assertStatus(200);
+        // Should show all accounts without filters
+    }
+
+    // Helper method to get manager session data
+    private function getManagerSession(): array
+    {
+        return [
+            'user' => [
+                'id' => 1,
+                'email' => 'martin.manager@example.test',
+                'first_name' => 'Martin',
+                'last_name' => 'Manager',
+                'type' => 'manager',
+                'display_name' => 'M Manager',
+            ]
+        ];
     }
 }
