@@ -1,0 +1,44 @@
+name: PHP Composer
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Build Docker Compose services
+      run: docker compose build
+
+    - name: Start Docker Compose services
+      run: docker compose up -d
+
+    - name: Wait for MySQL to be ready
+      run: |
+        timeout 60 bash -c 'until docker compose exec -T mysql mysqladmin ping -h 127.0.0.1 -proot; do sleep 2; done'
+
+    - name: Copy environment file
+      run: cp web-service/.env.sample web-service/.env
+
+    - name: Run database migrations
+      run: docker compose exec php composer migrate
+
+    - name: Run database seeds
+      run: docker compose exec php composer seed:all
+
+    - name: Run test suite
+      run: docker compose exec php composer test
+
+    - name: Stop Docker Compose services
+      if: always()
+      run: docker compose down
