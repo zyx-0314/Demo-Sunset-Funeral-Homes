@@ -124,8 +124,76 @@ class Admin extends BaseController
             // Initialize UsersModel for database operations
             $userModel = new UsersModel();
 
-            // Fetch all active accounts (status = 1) ordered by ID ascending for display
-            $accounts = $userModel->where('account_status', 1)->orderBy('id', 'ASC')->findAll();
+            // Get sorting parameters from request
+            $sort = $this->request->getGet('sort') ?? '';
+            $type = $this->request->getGet('type') ?? 'all';
+            $searchQuery = $this->request->getGet('search') ?? '';
+
+            // Build query with filters
+            $query = $userModel->where('account_status', 1);
+
+            // Apply type filter
+            if ($type && $type !== 'all') {
+                if ($type === 'employee') {
+                    // employee = any non-client type
+                    $query->whereNotIn('type', ['client', '']);
+                } else {
+                    $query->where('type', $type);
+                }
+            }
+
+            // Apply search filter
+            if ($searchQuery) {
+                $query->groupStart()
+                    ->like("CONCAT(first_name, ' ', COALESCE(middle_name, ''), ' ', last_name)", $searchQuery)
+                    ->orLike('email', $searchQuery)
+                    ->groupEnd();
+            }
+
+            // Get pagination parameters from request
+            $page = max(1, (int) ($this->request->getGet('page') ?? 1));
+            $per_page = max(1, (int) ($this->request->getGet('per_page') ?? 10));
+
+            // Validate per_page to allowed values
+            $allowed_per_page = [5, 10, 20];
+            if (!in_array($per_page, $allowed_per_page)) {
+                $per_page = 10;
+            }
+
+            // Apply sorting
+            switch ($sort) {
+                case 'name_asc':
+                    $query->orderBy("CONCAT(first_name, ' ', COALESCE(middle_name, ''), ' ', last_name) ASC");
+                    break;
+                case 'name_desc':
+                    $query->orderBy("CONCAT(first_name, ' ', COALESCE(middle_name, ''), ' ', last_name) DESC");
+                    break;
+                case 'email_asc':
+                    $query->orderBy('email', 'ASC');
+                    break;
+                case 'email_desc':
+                    $query->orderBy('email', 'DESC');
+                    break;
+                default:
+                    $query->orderBy('id', 'ASC');
+                    break;
+            }
+
+            // Get total count for pagination before applying limit
+            $totalAccounts = $query->countAllResults(false);
+
+            // Adjust page if it exceeds total pages
+            $totalPages = (int) ceil($totalAccounts / $per_page);
+            if ($page > $totalPages && $totalPages > 0) {
+                $page = $totalPages;
+            }
+
+            // Apply pagination
+            $offset = ($page - 1) * $per_page;
+            $query->limit($per_page, $offset);
+
+            // Fetch paginated, filtered and sorted accounts
+            $accounts = $query->findAll();
 
             // Count total active accounts for dashboard statistics
             $accountsCount = $userModel->where('account_status', 1)->countAllResults();
@@ -146,6 +214,12 @@ class Admin extends BaseController
             'accountsCount' => $accountsCount ?? 0,
             'verifiedEmailAccountsCount' => $verifiedEmailAccountsCount ?? 0,
             'nonVerfiedEmailAccountsCount' => $nonVerfiedEmailAccountsCount ?? 0,
+            'currentPage' => $page,
+            'perPage' => $per_page,
+            'totalAccounts' => $totalAccounts ?? 0,
+            'sort' => $sort,
+            'type' => $type,
+            'q' => $searchQuery,
         ]);
     }
 
