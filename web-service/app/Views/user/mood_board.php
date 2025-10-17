@@ -42,6 +42,7 @@ $dummyService2 = (object) [
             <p class="text-gray-600">Visual identity samples for Sunset Funeral Homes (funeral services)</p>
         </header>
 
+        <!-- Color Palette -->
         <section class="mb-8">
             <h2 class="mb-4 font-semibold text-lg">Color system</h2>
             <p class="mb-4 text-gray-600 text-sm">Three main colors with three vibrance levels (dark → light). Preview and hex codes shown below.</p>
@@ -81,6 +82,7 @@ $dummyService2 = (object) [
             </div>
         </section>
 
+        <!-- Typography -->
         <section class="mb-8">
             <h2 class="mb-4 font-semibold text-lg">Typography</h2>
             <div class="gap-6 grid grid-cols-2">
@@ -95,6 +97,7 @@ $dummyService2 = (object) [
             </div>
         </section>
 
+        <!-- Button Group -->
         <section class="mb-8">
             <h2 class="mb-4 font-semibold text-lg">Buttons</h2>
             <div class="space-y-4">
@@ -116,6 +119,7 @@ $dummyService2 = (object) [
             </div>
         </section>
 
+        <!-- Card Group -->
         <section class="mb-8">
             <h2 class="mb-4 font-semibold text-lg">Card samples</h2>
             <div class="mb-6">
@@ -163,6 +167,7 @@ $dummyService2 = (object) [
             </div>
         </section>
 
+        <!-- Logo Group -->
         <section class="mb-8">
             <h2 class="mb-4 font-semibold text-lg">Logos</h2>
             <div class="gap-4 grid grid-cols-2">
