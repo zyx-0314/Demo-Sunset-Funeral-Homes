@@ -34,7 +34,7 @@ class UsersSeeder extends Seeder
                 'email' => 'bob@example.test',
                 'password_hash' => $password,
                 'type' => 'client',
-                'account_status' => 1,
+                'account_status' => 0,  // inactive
                 'email_activated' => 0,
                 'newsletter' => 1,
                 'created_at' => $now,
