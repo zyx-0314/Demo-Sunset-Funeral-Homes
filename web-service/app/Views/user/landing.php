@@ -1,6 +1,8 @@
 <?php
-// Page: user/landing
-// $services: object array | string | null
+// Page: user/landing.php
+// Purpose: Landing page for the funeral home website showcasing services and company information
+// Data Contract:
+// - $services: object array | string | null - Services data for carousel display
 
 // Variable declarations
 $items = $services ?? [];
@@ -103,22 +105,10 @@ $process = ["You Arrange", "We Collect", "We Register", "We Return"];
         <?php endif; ?>
 
         <!-- Steps -->
-        <section class="mt-12">
-            <h3 class="font-semibold text-lg">We guide you through the process</h3>
-            <div class="gap-6 grid grid-cols-1 md:grid-cols-4 mt-6">
-                <?php
-                foreach ($process as $value) : ?>
-                    <div class="bg-white p-4 rounded-lg text-center">
-                        <div class="font-medium text-sm"><?php echo $value ?></div>
-                    </div>
-                <?php
-                endforeach;
-                ?>
-            </div>
-        </section>
+        <?= view('components/sections/steps', ['steps' => $process]) ?>
 
         <!-- CTA (component) -->
-        <?= view('components/cta', [
+        <?= view('components/sections/cta', [
             'heading' => 'Can we help?',
             'sub' => 'Our Care Team is available 24 hours a day by phone and live-chat.',
             'primary' => ['label' => 'Call (555) 123-4567', 'href' => 'tel:5551234567'],

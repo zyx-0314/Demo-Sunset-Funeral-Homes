@@ -1,7 +1,8 @@
 <?php
 // Component: components/cards/service_card.php
-// Data contract:
-// $service: object
+// Purpose: Service card component for displaying service information with image and details
+// Data Contract:
+// - $service: object - Service object with properties (id, title, image, category, cost, created_at, is_available, banner_image)
 ?>
 <article
     class="flex flex-col h-full bg-white shadow-sm rounded-lg overflow-hidden hover:scale-105 hover:shadow-lg transition hover:-translate-y-[2px] duration-200 card <?= $service->is_available ? "" : "grayscale brightness-90 contrast-90 opacity-50" ?>"

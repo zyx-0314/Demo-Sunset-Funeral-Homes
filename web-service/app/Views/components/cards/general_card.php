@@ -1,10 +1,11 @@
 <?php
-// Component: components/cards/card.php
-// Data contract:
-// $title: string
-// $excerpt: string
-// $image: string|null
-// $href: string|null
+// Component: components/cards/general_card.php
+// Purpose: General card component for displaying content with optional image and link
+// Data Contract:
+// - $title: string|null - Card title
+// - $excerpt: string|null - Card description text
+// - $image: string|null - Image URL
+// - $href: string|null - Link URL for "Read more"
 ?>
 <article class="bg-white shadow-sm border rounded-lg overflow-hidden">
   <?php if (!empty($image)): ?>

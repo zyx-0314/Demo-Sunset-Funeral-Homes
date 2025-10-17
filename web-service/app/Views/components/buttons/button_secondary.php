@@ -1,10 +1,11 @@
 <?php
-// Page: components/button/button_secondary
-// Data contract:
-// $disable: boolean | null
-// $href: string | null
-// $label: string | null
-// $dark: string | null
+// Component: components/buttons/button_secondary.php
+// Purpose: Secondary button component with optional disabled and dark variants
+// Data Contract:
+// - $label: string|null - Button text
+// - $href: string|null - Button link URL
+// - $disable: bool|null - Whether button is disabled
+// - $dark: bool|null - Whether to use dark variant
 ?>
 <?php
 if ($disable ?? false) :

@@ -1,5 +1,8 @@
 <?php
-// Page: user/road_map
+// Page: user/road_map.php
+// Purpose: Road map page displaying project progress and planned features with filtering capabilities
+// Data Contract:
+// - None (uses hardcoded roadmap data)
 
 // Variable declarations
 $roadmapItemsDone = [

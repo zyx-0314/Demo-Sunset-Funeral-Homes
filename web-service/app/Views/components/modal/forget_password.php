@@ -1,5 +1,8 @@
 <?php
 // Component: components/modal/forget_password.php
+// Purpose: Modal component for password reset functionality
+// Data Contract:
+// - None
 ?>
 
 <button type="button" id="openForgotModal" class="font-medium text-emerald-600 hover:underline">Forgot your password?</button>
