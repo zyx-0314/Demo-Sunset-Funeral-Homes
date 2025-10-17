@@ -240,4 +240,34 @@ class AccountsTest extends CIUnitTestCase
 
         $response->assertStatus(302); // Duplicate email redirects back
     }
+
+    public function testAdminUpdateAccountType(): void
+    {
+        // Simulate logged-in manager user
+        $response = $this->withSession([
+            'user' => [
+                'id' => 1,
+                'email' => 'martin.manager@example.test',
+                'first_name' => 'Martin',
+                'last_name' => 'Manager',
+                'type' => 'manager',
+                'display_name' => 'M Manager',
+            ]
+        ])->post('/admin/accounts/update', [
+            'id' => 3, // Ethan Embalmer (employee)
+            'type' => 'manager', // Change from employee to manager
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJSONExact([
+            'success' => true,
+            'message' => 'Account Type Updated',
+            'data' => ['id' => '3'] // ID comes back as string from POST data
+        ]);
+
+        // Verify the account type was actually updated in database
+        $userModel = new \App\Models\UsersModel();
+        $updatedAccount = $userModel->find(3);
+        $this->assertEquals('manager', $updatedAccount->type);
+    }
 }
