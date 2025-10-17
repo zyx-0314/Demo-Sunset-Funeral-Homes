@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\UsersModel;
+use CodeIgniter\HTTP\ResponseInterface;
 
 /**
  * Admin Controller - Handles Administrative Dashboard and Management
@@ -142,5 +143,137 @@ class Admin extends BaseController
             'verifiedEmailAccountsCount' => $verifiedEmailAccountsCount ?? 0,
             'nonVerfiedEmailAccountsCount' => $nonVerfiedEmailAccountsCount ?? 0,
         ]);
+    }
+
+    /**
+     * Create New User Account
+     *
+     * POST /admin/accounts
+     * Creates a new user account with validation, duplicate checking, and optional profile image upload.
+     * Supports both AJAX/JSON responses and traditional form submissions.
+     * Requires manager authentication.
+     */
+    public function createAccounts()
+    {
+        // Access service request
+        $request = service('request');
+        // Initialize Session
+        $session = session();
+
+        // Basic validation using CI's Validation service
+        $validation = \Config\Services::validation();
+        $validation->setRule('first_name', 'First name', 'required|min_length[2]|max_length[100]');
+        $validation->setRule('middle_name', 'Middle name', 'permit_empty|max_length[100]');
+        $validation->setRule('last_name', 'Last name', 'required|min_length[2]|max_length[100]');
+        $validation->setRule('email', 'Email', 'required|valid_email');
+        $validation->setRule('password', 'Password', 'required|min_length[8]');
+        $validation->setRule('password_confirm', 'Password Confirmation', 'required|matches[password]');
+
+        // Assign value from post to variable
+        $post = $request->getPost();
+
+        // If no value found from post, notify it is required
+        if (! $validation->run($post)) {
+            $errors = $validation->getErrors();
+
+            // If AJAX/JSON request, keep JSON behavior
+            $wantsJson = $request->isAJAX() || stripos((string)$request->getHeaderLine('Accept'), 'application/json') !== false;
+            if ($wantsJson) {
+                return $this->response
+                    ->setStatusCode(ResponseInterface::HTTP_UNPROCESSABLE_ENTITY)
+                    ->setJSON([
+                        'success' => false,
+                        'message' => 'Validation failed',
+                        'errors'  => $errors,
+                        'old'     => $post,
+                    ]);
+            }
+
+            $session->setFlashdata('errors', array_values($errors));
+            $session->setFlashdata('fieldErrors', $errors);
+            $session->setFlashdata('old', $post);
+
+            return redirect()->back()->withInput();
+        }
+
+        // Persist user to database using UsersModel
+        $userModel = new UsersModel();
+
+        // Prevent duplicate emails
+        if ($userModel->where('email', $post['email'])->first()) {
+            $wantsJson = $request->isAJAX() || stripos((string)$request->getHeaderLine('Accept'), 'application/json') !== false;
+            if ($wantsJson) {
+                return $this->response
+                    ->setStatusCode(ResponseInterface::HTTP_CONFLICT)
+                    ->setJSON(['success' => false, 'message' => 'Email already registered', 'errors' => ['email' => 'Email already registered']]);
+            }
+
+            $session->setFlashdata('errors', ['email' => 'Email already registered']);
+            $session->setFlashdata('old', $post);
+            return redirect()->back()->withInput();
+        }
+
+        // Handle profile image upload
+        $profileImagePath = null;
+        try {
+            $file = $request->getFile('profile_image');
+            if ($file && $file->isValid() && ! $file->hasMoved()) {
+                $allowed = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
+                $mime = $file->getClientMimeType();
+                if (! in_array($mime, $allowed)) {
+                    return $this->response->setStatusCode(ResponseInterface::HTTP_UNSUPPORTED_MEDIA_TYPE)
+                        ->setJSON(['success' => false, 'message' => 'Invalid image type']);
+                }
+
+                $maxBytes = 5 * 1024 * 1024;
+                if ($file->getSize() > $maxBytes) {
+                    return $this->response->setStatusCode(413)
+                        ->setJSON(['success' => false, 'message' => 'Image too large']);
+                }
+
+                $sub = date('Y') . DIRECTORY_SEPARATOR . date('m');
+                $publicUploadDir = FCPATH . 'uploads' . DIRECTORY_SEPARATOR . 'profiles' . DIRECTORY_SEPARATOR . $sub . DIRECTORY_SEPARATOR;
+                if (! is_dir($publicUploadDir)) mkdir($publicUploadDir, 0755, true);
+
+                $newName = $file->getRandomName();
+                $moved = $file->move($publicUploadDir, $newName);
+                if ($moved) {
+                    $profileImagePath = 'uploads/profiles/' . str_replace(DIRECTORY_SEPARATOR, '/', $sub) . '/' . $newName;
+                }
+            }
+        } catch (\Exception $e) {
+            return $this->response->setStatusCode(ResponseInterface::HTTP_INTERNAL_SERVER_ERROR)
+                ->setJSON(['success' => false, 'message' => 'Failed to process profile image']);
+        }
+
+        try {
+            // Prepare data
+            $data = [
+                'first_name' => $post['first_name'],
+                'middle_name' => $post['middle_name'] ?? null,
+                'last_name' => $post['last_name'],
+                'email' => $post['email'],
+                'password_hash' => password_hash($post['password'], PASSWORD_DEFAULT),
+                'type' => $post['type'] ?? 'client',
+                'account_status' => 1,
+                'email_activated' => 0,
+                'newsletter' => isset($post['newsletter']) ? 1 : 0,
+                'gender' => $post['gender'] ?? null,
+                'profile_image' => $profileImagePath,
+            ];
+
+            $inserted = $userModel->insert($data);
+
+            if ($inserted === false) {
+                return $this->response->setStatusCode(ResponseInterface::HTTP_INTERNAL_SERVER_ERROR)
+                    ->setJSON(['success' => false, 'message' => 'Could not create account']);
+            }
+
+            return $this->response->setStatusCode(ResponseInterface::HTTP_CREATED)
+                ->setJSON(['success' => true, 'message' => 'Account created']);
+        } catch (\Exception $e) {
+            return $this->response->setStatusCode(ResponseInterface::HTTP_INTERNAL_SERVER_ERROR)
+                ->setJSON(['success' => false, 'message' => 'Server error while creating account: ' . $e->getMessage()]);
+        }
     }
 }

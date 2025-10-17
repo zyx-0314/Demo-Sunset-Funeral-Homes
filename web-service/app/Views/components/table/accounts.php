@@ -21,12 +21,6 @@ if ($page > $total_pages) $page = $total_pages;
 
 $start = ($page - 1) * $per_page;
 $pageAccounts = array_slice($active, $start, $per_page);
-
-function querySetter(array $overrides = [])
-{
-    $q = array_merge($_GET, $overrides);
-    return http_build_query($q);
-}
 ?>
 
 <div class="bg-white shadow rounded-lg overflow-hidden">
@@ -86,11 +80,11 @@ function querySetter(array $overrides = [])
                 <?php if ($total_pages > 1): ?>
                     <?php $startP = max(1, $page - 3);
                     $endP = min($total_pages, $page + 3); ?>
-                    <a class="px-3 py-1 border rounded <?= esc(($page <= 1) ? 'opacity-50 pointer-events-none' : ''); ?>" href="?<?= esc(querySetter(['page' => $page - 1 < 1 ? 1 : $page - 1, 'per_page' => $per_page])); ?>">Prev</a>
+                    <a class="px-3 py-1 border rounded <?= esc(($page <= 1) ? 'opacity-50 pointer-events-none' : ''); ?>" href="?<?= esc(http_build_query(array_merge($_GET, ['page' => $page - 1 < 1 ? 1 : $page - 1, 'per_page' => $per_page]))); ?>">Prev</a>
                     <?php for ($p = $startP; $p <= $endP; $p++): ?>
-                        <a class="px-3 py-1 border rounded <?= esc(($p == $page) ? 'btn-sage text-white' : ''); ?>" href="?<?= esc(querySetter(['page' => $p, 'per_page' => $per_page])); ?>"><?= esc($p); ?></a>
+                        <a class="px-3 py-1 border rounded <?= esc(($p == $page) ? 'btn-sage text-white' : ''); ?>" href="?<?= esc(http_build_query(array_merge($_GET, ['page' => $p, 'per_page' => $per_page]))); ?>"><?= esc($p); ?></a>
                     <?php endfor; ?>
-                    <a class="px-3 py-1 border rounded <?= esc(($page >= $total_pages) ? 'opacity-50 pointer-events-none' : ''); ?>" href="?<?= esc(querySetter(['page' => $page + 1 > $total_pages ? $total_pages : $page + 1, 'per_page' => $per_page])); ?>">Next</a>
+                    <a class="px-3 py-1 border rounded <?= esc(($page >= $total_pages) ? 'opacity-50 pointer-events-none' : ''); ?>" href="?<?= esc(http_build_query(array_merge($_GET, ['page' => $page + 1 > $total_pages ? $total_pages : $page + 1, 'per_page' => $per_page]))); ?>">Next</a>
                 <?php endif; ?>
             </div>
         </div>
