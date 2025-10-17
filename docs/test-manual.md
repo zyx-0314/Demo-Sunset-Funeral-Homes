@@ -7,24 +7,29 @@ Base URL: http://localhost:8090
 ---
 
 ## Authentication
+
 URL: http://localhost:8090/login
 
 ### Wrong Email
+
 - Email: wrong.martin.manager@example.test
 - Password: Password123!
 - Expected: Show error indicator on Email input
 
 ### Wrong Password
+
 - Email: martin.manager@example.test
 - Password: WrongPassword123!
 - Expected: Show error indicator on Password input
 
 ### Inactive/Deleted Account
+
 - Email: bob@example.test
 - Password: Password123!
 - Expected: Show error indicator on Email input (or generic auth error)
 
 ### Correct Login
+
 - Manager
   - Email: martin.manager@example.test
   - Password: Password123!
@@ -39,15 +44,37 @@ URL: http://localhost:8090/login
   - Expected: Redirect to Landing Page with logged header → http://localhost:8090/
 
 ### Sign Up — Client
+
 URL: http://localhost:8090/signup
+
 - Required: First Name and Last Name must have at least 2 characters
 - Required: Password and Confirmation Password match
+
+---
+
+## Error Handling
+
+### 403 Forbidden
+
+- As a non-admin user (e.g., client or employee), log in and try to access admin pages like http://localhost:8090/admin/dashboard or http://localhost:8090/admin/services
+- Expected: 403 Forbidden error page
+
+### 404 Not Found
+
+- Access a non-existent URL, e.g., http://localhost:8090/nonexistent
+- Expected: 404 Not Found error page
+
+### 400 Bad Request
+
+- Submit a form with invalid data, e.g., POST to /signup with empty required fields or malformed data
+- Expected: 400 Bad Request error or validation errors displayed
 
 ---
 
 ## Services
 
 ### Read Services
+
 - Admin (available and not): http://localhost:8090/admin/services
   - Sort: Cost and Name
   - Filter: Available
@@ -58,14 +85,17 @@ URL: http://localhost:8090/signup
 - Specific service: http://localhost:8090/services/1
 
 ### Create Service
+
 - Go to http://localhost:8090/admin/services → click “Create Service” button
 - Expected: Modal/form opens; validation errors shown for missing/invalid fields; successful create shows in list
 
 ### Update Service
+
 - Go to http://localhost:8090/admin/services → click Update icon button
 - Expected: Edit modal/form opens; changes persist and reflect in list/detail
 
 ### Delete Service
+
 - Go to http://localhost:8090/admin/services → click Delete icon button
 - Expected: Confirmation shown; item removed from list on success
 
@@ -74,18 +104,22 @@ URL: http://localhost:8090/signup
 ## Accounts
 
 ### Read Accounts
+
 - Summarized table: http://localhost:8090/admin/accounts
   - Sort: Type, Name, Email
   - Search: Name and Email
 
 ### Create Account
+
 - Client: http://localhost:8090/signup
 - Employee: http://localhost:8090/admin/accounts → “Create Account” button
 
 ### Update Account
+
 - http://localhost:8090/admin/accounts → Update icon button
 
 ### Delete Account
+
 - http://localhost:8090/admin/accounts → Delete icon button
 
 ---
@@ -93,27 +127,31 @@ URL: http://localhost:8090/signup
 ## Inquiries
 
 ### Read Inquiries
+
 - All inquiries: http://localhost:8090/admin/inquiries
   - Sort: Start Date and End Date
   - Filter: Status
   - Search: Name and Service
 
 ### Create Inquiries
+
 - Format: http://localhost:8090/reservation/<id>
 - Sample using 4: http://localhost:8090/reservation/4
 
 ### Update Inquiries
+
 - http://localhost:8090/admin/inquiries → Update icon button
 
 ---
 
 ## Notes
+
 - These scenarios assume seeded data with sample users and services.
 - If IDs differ (e.g., specific service id), adjust URLs accordingly.
 - Convert stable, repeatable flows to automated PHPUnit tests to reduce manual effort over time.
 
 ---
 
-- Last update: 2025-10-17
-- Who: Maintainers
-- TL;DR: Use this as a quick smoke test list; convert stable flows into automated tests and keep credentials/URLs in sync with seeds and routes.
+- Last update: 2025-10-18
+- Who: AI Assistant
+- TL;DR: Use this as a quick smoke test list including error handling (403, 404, 400); convert stable flows into automated PHPUnit tests and keep credentials/URLs in sync with seeds and routes.
