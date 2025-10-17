@@ -1,16 +1,8 @@
-# 📄 Copilot Instructions.md
-
-## Purpose
-
-This file defines how Copilot (and similar AI assistants) should generate, suggest, and refactor code for our projects. It ensures consistency, simplicity, and alignment with our engineering principles and SOPs.
-
----
-
-## Golden Rules
+# 📄 Copilot Instructions
 
 - ✅ Always follow [Core Engineering Principles](../docs/core-engineering-principles.md).
 - ✅ Always follow [SOP Manual](../docs/sop-manual.md).
-- ✅ Always follow [Branching guide](../docs/branching.md) and [Commit Manual](../docs/commit-manual.md).
+- ✅ Always follow [Branching guide](../docs/branching-guidelines.md) and [Commit Manual](../docs/commit-manual.md).
 - ✅ If a mood board exists in views, keep designs aligned with it.
 - ✅ Prefer simple, working examples first (KISS).
 - ✅ Suggest tests alongside code.
@@ -19,7 +11,14 @@ This file defines how Copilot (and similar AI assistants) should generate, sugge
 - ✅ Propose documentation updates (dev-manual, technical-manual, sop-manual) when code changes workflows or APIs.
 - ❌ Do not generate over-engineered abstractions.
 - ❌ Do not scaffold unused files, classes, or layers.
-- ❌ Do not suggest tools we don’t use (e.g., Newman for testing).
+- ❌ Do not suggest tools we don't use (e.g., Newman for testing).
+- ❌ Do not use single-letter or three-letter names for variables, functions, or classes; prefer readable names (e.g., avoid $e, use $error).
+- ❌ Do not perform unnecessary conversions between arrays and objects; use the data structure as-is when possible.
+- ❌ Do not add features or code that are not explicitly mentioned, you can suggest and wait for user approval
+
+## Purpose
+
+This file defines how Copilot (and similar AI assistants) should generate, suggest, and refactor code for our projects. It ensures consistency, simplicity, and alignment with our engineering principles and SOPs.
 
 ---
 
@@ -72,7 +71,7 @@ Example for a component:
 - Interfaces → {Name}Interface (e.g., UserRepositoryInterface).
 - DB tables/columns → snake_case (e.g., users, created_at).
 - Docs → kebab-case (e.g., dev-manual.md).
-- Branches → <category>/<short-description> (see [branching.md](../docs/branching.md)).
+- Branches → <category>/<short-description> (see [branching-guidelines.md](../docs/branching-guidelines.md)).
 
 Categories: frontend, backend, databases, documents.
 Examples: backend/jwt-auth-service, documents/update-sop-manual.
@@ -95,7 +94,7 @@ Suggest doc updates with every meaningful change:
 - dev-manual.md → if setup/commands change.
 - technical-manual.md → if architecture, schema, or API contracts change.
 - sop-manual.md → if workflow steps change.
-- branching.md and commit-manual.md → if Git flow changes.
+- branching-guidelines.md and commit-manual.md → if Git flow changes.
 
 End all docs with a footer:
 
@@ -112,7 +111,7 @@ End all docs with a footer:
 - Format:
   - <type>(<scope>): <short summary>
   - Optional body explains why + what changed (wrap at ~72 chars).
-- Branch names follow <category>/<short-description>; see [branching.md](../docs/branching.md) for workflow and PR rules.
+- Branch names follow <category>/<short-description>; see [branching-guidelines.md](../docs/branching-guidelines.md) for workflow and PR rules.
 - See [commit-manual.md](../docs/commit-manual.md) for examples.
 
 ---
@@ -152,7 +151,7 @@ End all docs with a footer:
 - “Generate a UsersController with index() and store() that call UserService.”
 - “Write a PHPUnit test for UserService::create including success and validation error cases.”
 - “Suggest migration + seeder for services table with slug and cost fields.”
-- “Update technical-manual.md with request/response for POST /v1/services and link branching.md.”
+- "Update technical-manual.md with request/response for POST /v1/services and link branching-guidelines.md."
 
 ---
 
