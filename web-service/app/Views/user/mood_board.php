@@ -173,13 +173,13 @@ $dummyService2 = (object) [
             <div class="gap-4 grid grid-cols-2">
                 <div class="bg-white shadow p-6 rounded text-center">
                     <div class="flex justify-center items-center bg-white mx-auto mb-3 rounded-full w-24 h-24 overflow-hidden">
-                        <img src="logo/main.svg" alt="Sunset Funeral Homes" style="width:120px; height:120px; object-fit:cover; transform:translateX(0);">
+                        <img src="/logo/main.svg" alt="Sunset Funeral Homes" style="width:120px; height:120px; object-fit:cover; transform:translateX(0);">
                     </div>
                     <p class="font-medium">Main — Circle</p>
                 </div>
                 <div class="bg-white shadow p-6 rounded text-center">
                     <div class="flex justify-center items-center bg-white mx-auto mb-3 rounded-md w-24 h-24 overflow-hidden">
-                        <img src="logo/main.svg" alt="Sunset Funeral Homes" style="width:120px; height:120px; object-fit:cover; transform:translateX(0);">
+                        <img src="/logo/main.svg" alt="Sunset Funeral Homes" style="width:120px; height:120px; object-fit:cover; transform:translateX(0);">
                     </div>
                     <p class="font-medium">Main — Square</p>
                 </div>
