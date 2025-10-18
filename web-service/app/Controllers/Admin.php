@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\UsersModel;
+use App\Models\ServicesModel;
 use CodeIgniter\HTTP\ResponseInterface;
 
 /**
@@ -492,5 +493,50 @@ class Admin extends BaseController
             return $this->response->setStatusCode(ResponseInterface::HTTP_INTERNAL_SERVER_ERROR)
                 ->setJSON(['success' => false, 'message' => 'Server error while deleting account']);
         }
+    }
+
+    /**
+     * Display Admin Services Management Page
+     *
+     * GET /admin/services
+     * Shows the services management interface with service statistics and service listings.
+     * Displays all active services with availability counts and statistics.
+     * Requires manager authentication.
+     */
+    public function showServicesPage()
+    {
+        // Enforce manager-only access using role-based authorization
+        $accessCheck = $this->checkManagerAccess();
+        if ($accessCheck !== null) {
+            return $accessCheck; // Return 403 error view if access denied
+        }
+
+        try {
+            // Initialize ServicesModel for database operations
+            $serviceModel = new ServicesModel();
+
+            // Query Builder to get all active services from database
+            $services = $serviceModel->where('is_active', 1)->orderBy('id', 'ASC')->findAll();
+
+            // Count total number of active services
+            $servicesCount = $serviceModel->where('is_active', 1)->countAllResults();
+
+            // Count available services (active and available)
+            $availableServicesCount = $serviceModel->where('is_active', 1)->where('is_available', 1)->countAllResults();
+
+            // Calculate unavailable services by subtracting available from total
+            $notAvailableServicesCount = $servicesCount - $availableServicesCount;
+        } catch (\Exception $e) {
+            // Handle database errors gracefully by setting error message
+            $services = "Server Issue: " . $e;
+        }
+
+        // Render services management view with collected data and statistics
+        return view('admin/services', [
+            'services' => $services,
+            'servicesCount' => $servicesCount,
+            'availableServicesCount' => $availableServicesCount,
+            'notAvailableServicesCount' => $notAvailableServicesCount,
+        ]);
     }
 }
