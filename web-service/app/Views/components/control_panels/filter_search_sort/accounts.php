@@ -1,6 +1,12 @@
 <?php
 // Component: components/control_panels/filter_search_sort/accounts.php
 // Purpose: Renders search/sort/type controls for admin accounts with server-side filtering.
+// Data Contract:
+// - $_GET['search']: string|null - Current search query for title
+// - $_GET['sort']: string|null - Current sort parameter (cost_desc, cost_asc, name_asc, name_desc)
+// - $_GET['type']: string|null - Current availability filter
+// - $_GET['page']: int - Current page number
+// - $_GET['per_page']: int - Items per page
 ?>
 <form id="accountsFilterForm" method="GET" action="<?= current_url() ?>" class="flex sm:flex-row flex-col sm:items-center gap-3 mb-4">
     <input type="search" name="search" id="accounts_q" placeholder="Search by name or email" value="<?= esc($_GET['search'] ?? '') ?>" class="shadow-sm px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full sm:w-1/3">
