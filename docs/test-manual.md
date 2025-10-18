@@ -6,6 +6,44 @@ Base URL: http://localhost:8090
 
 ---
 
+## Database
+
+### Migration Tests
+
+#### Users Table Migration
+
+- **Check if users table exists**: Verify the `users` table was created successfully
+- **Check users table structure**: Verify all required columns exist (id, first_name, middle_name, last_name, email, password_hash, type, account_status, email_activated, newsletter, created_at, updated_at)
+- **Check users table constraints**: Verify primary key, unique email constraint, and proper data types
+
+#### Services Table Migration
+
+- **Check if services table exists**: Verify the `services` table was created successfully
+- **Check services table structure**: Verify all required columns exist (id, title, description, cost, is_available, is_active, inclusions, banner_image, created_at, updated_at, deleted_at)
+- **Check services table constraints**: Verify primary key, proper data types, and nullable fields
+
+### Seeding Tests
+
+#### Users Seeding
+
+- **Check users seed data count**: Verify correct number of users were seeded (10 total: 3 clients, 1 embalmer, 1 driver, 3 staff, 1 florist, 1 manager)
+- **Check client users**: Verify Alice Carson, Bob Dawson, Cara Evans exist with correct data
+- **Check employee users**: Verify Ethan Miller (embalmer), Darren Rios (driver), Sofia Kent/Tina Ng/Marco Reed (staff), Flora Bloom (florist) exist
+- **Check manager user**: Verify Martin Gale exists with manager type
+- **Check user types distribution**: Verify correct count per user type (client: 3, embalmer: 1, driver: 1, staff: 3, florist: 1, manager: 1)
+- **Check account statuses**: Verify active/inactive status distribution
+- **Check password hashing**: Verify all passwords are properly hashed
+
+#### Services Seeding
+
+- **Check services seed data count**: Verify correct number of services were seeded (8 total)
+- **Check available services**: Verify 6 services are marked as available (is_available = 1)
+- **Check unavailable services**: Verify 2 services are marked as unavailable (is_available = 0)
+- **Check active services**: Verify 7 services are active (is_active = 1)
+- **Check inactive services**: Verify 1 service is inactive (is_active = 0)
+- **Check service data integrity**: Verify all services have required fields (title, description, cost, inclusions)
+- **Check cost ranges**: Verify services have appropriate cost values (from $5,000 to $60,000)
+
 ## Authentication
 
 URL: http://localhost:8090/login
