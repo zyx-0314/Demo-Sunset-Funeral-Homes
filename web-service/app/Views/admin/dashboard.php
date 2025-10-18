@@ -1,9 +1,10 @@
 <?php
-// Page: admin/dashboard
-// Data contract:
-// $requestsCount: number | string
-// $servicesCount: number | string
-// $activeClientsCount: number | string
+// Page: admin/dashboard.php
+// Purpose: Admin dashboard displaying system statistics and management overview
+// Data Contract:
+// - $requestsCount: number | string - Total number of inquiries/requests in the system
+// - $servicesCount: number | string - Total number of services available
+// - $activeClientsCount: number | string - Count of currently active client accounts
 ?>
 
 <!doctype html>
