@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\UsersModel;
+use App\Models\ServicesModel;
 use CodeIgniter\HTTP\ResponseInterface;
 
 /**
@@ -151,13 +152,13 @@ class Admin extends BaseController
             }
 
             // Get pagination parameters from request
-            $page = max(1, (int) ($this->request->getGet('page') ?? 1));
-            $per_page = max(1, (int) ($this->request->getGet('per_page') ?? 10));
+            $currentPage = max(1, (int) ($this->request->getGet('page') ?? 1));
+            $perPage = max(1, (int) ($this->request->getGet('per_page') ?? 10));
 
-            // Validate per_page to allowed values
-            $allowed_per_page = [5, 10, 20];
-            if (!in_array($per_page, $allowed_per_page)) {
-                $per_page = 10;
+            // Validate perPage to allowed values
+            $allowed_perPage = [5, 10, 20];
+            if (!in_array($perPage, $allowed_perPage)) {
+                $perPage = 10;
             }
 
             // Apply sorting
@@ -183,14 +184,14 @@ class Admin extends BaseController
             $totalAccounts = $query->countAllResults(false);
 
             // Adjust page if it exceeds total pages
-            $totalPages = (int) ceil($totalAccounts / $per_page);
-            if ($page > $totalPages && $totalPages > 0) {
-                $page = $totalPages;
+            $totalPages = (int) ceil($totalAccounts / $perPage);
+            if ($currentPage > $totalPages && $totalPages > 0) {
+                $currentPage = $totalPages;
             }
 
             // Apply pagination
-            $offset = ($page - 1) * $per_page;
-            $query->limit($per_page, $offset);
+            $offset = ($currentPage - 1) * $perPage;
+            $query->limit($perPage, $offset);
 
             // Fetch paginated, filtered and sorted accounts
             $accounts = $query->findAll();
@@ -214,12 +215,12 @@ class Admin extends BaseController
             'accountsCount' => $accountsCount ?? 0,
             'verifiedEmailAccountsCount' => $verifiedEmailAccountsCount ?? 0,
             'nonVerfiedEmailAccountsCount' => $nonVerfiedEmailAccountsCount ?? 0,
-            'currentPage' => $page,
-            'perPage' => $per_page,
+            'currentPage' => $currentPage,
+            'perPage' => $perPage,
             'totalAccounts' => $totalAccounts ?? 0,
             'sort' => $sort,
             'type' => $type,
-            'q' => $searchQuery,
+            'searchQuery' => $searchQuery,
         ]);
     }
 
@@ -492,5 +493,119 @@ class Admin extends BaseController
             return $this->response->setStatusCode(ResponseInterface::HTTP_INTERNAL_SERVER_ERROR)
                 ->setJSON(['success' => false, 'message' => 'Server error while deleting account']);
         }
+    }
+
+    /**
+     * Display Admin Services Management Page
+     *
+     * GET /admin/services
+     * Shows the services management interface with service statistics and service listings.
+     * Requires manager authentication.
+     */
+    public function showServicesPage()
+    {
+        // Enforce manager-only access using role-based authorization
+        $accessCheck = $this->checkManagerAccess();
+        if ($accessCheck !== null) {
+            return $accessCheck; // Return 403 error view if access denied
+        }
+
+        try {
+            // Initialize ServicesModel for database operations
+            $serviceModel = new ServicesModel();
+
+            // Get sorting parameters from request
+            $sort = $this->request->getGet('sort') ?? '';
+            $available = $this->request->getGet('available') ?? 'all';
+            $searchQuery = $this->request->getGet('search') ?? '';
+
+            // Build query with filters
+            $query = $serviceModel->where('is_active', 1);
+
+            // Apply availability filter
+            if ($available && $available !== 'all') {
+                if ($available === 'yes') {
+                    $query->where('is_available', 1);
+                } else {
+                    $query->where('is_available', 0);
+                }
+            }
+
+            // Apply search filter
+            if ($searchQuery) {
+                $query->like('title', $searchQuery);
+            }
+
+            // Get pagination parameters from request
+            $currentPage = max(1, (int) ($this->request->getGet('page') ?? 1));
+            $perPage = max(1, (int) ($this->request->getGet('per_page') ?? 10));
+
+            // Validate perPage to allowed values
+            $allowed_perPage = [5, 10, 20];
+            if (!in_array($perPage, $allowed_perPage)) {
+                $perPage = 10;
+            }
+
+            // Apply sorting
+            switch ($sort) {
+                case 'cost_asc':
+                    $query->orderBy('cost', 'ASC');
+                    break;
+                case 'cost_desc':
+                    $query->orderBy('cost', 'DESC');
+                    break;
+                case 'name_asc':
+                    $query->orderBy('title', 'ASC');
+                    break;
+                case 'name_desc':
+                    $query->orderBy('title', 'DESC');
+                    break;
+                default:
+                    $query->orderBy('id', 'ASC');
+                    break;
+            }
+
+            // Get total count for pagination before applying limit
+            $totalServices = $query->countAllResults(false);
+
+            // Adjust page if it exceeds total pages
+            $totalPages = (int) ceil($totalServices / $perPage);
+            if ($currentPage > $totalPages && $totalPages > 0) {
+                $currentPage = $totalPages;
+            }
+
+            // Apply pagination
+            $offset = ($currentPage - 1) * $perPage;
+            $query->limit($perPage, $offset);
+
+            // Fetch paginated, filtered and sorted services
+            $services = $query->findAll();
+
+            // Count total active services for dashboard statistics
+            $servicesCount = $serviceModel->where('is_active', 1)->countAllResults();
+
+            // Count available services (active and available) for statistics
+            $availableServicesCount = $serviceModel->where('is_active', 1)->where('is_available', 1)->countAllResults();
+
+            // Calculate unavailable services by subtracting available from total
+            $notAvailableServicesCount = $servicesCount - $availableServicesCount;
+        } catch (\Exception $e) {
+            // Handle database errors gracefully by setting error message
+            $services = "Server Issue: " . $e;
+        }
+
+        // Render services management view with collected data and statistics
+        return view('admin/services', [
+            'services' => $services,
+            'servicesCount' => $servicesCount ?? 0,
+            'availableServicesCount' => $availableServicesCount ?? 0,
+            'notAvailableServicesCount' => $notAvailableServicesCount ?? 0,
+            'currentPage' => $currentPage,
+            'perPage' => $perPage,
+            'totalServices' => $totalServices ?? 0,
+            'sort' => $sort,
+            'available' => $available,
+            'searchQuery' => $searchQuery,
+        ]);
     }
 }
